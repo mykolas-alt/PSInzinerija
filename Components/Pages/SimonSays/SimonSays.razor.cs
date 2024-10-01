@@ -8,11 +8,10 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         public int Level { get; private set; } = 0;
         public List<int> PlayerInput { get; private set; } = new List<int>();
         public bool GameOver { get; private set; } = false;
-        private Random rand = new Random();
         protected List<Button> Buttons { get; private set; }
         public bool IsShowingSequence { get; private set; } = false;
-
-        private SimonSays game;
+        private readonly Random rand = new Random();
+        private readonly SimonSays game;
         public SimonSays()
         {
             game = this;
@@ -26,7 +25,8 @@ namespace PSInzinerija1.Components.Pages.SimonSays
             public string Color { get; set; } = "white";
             public string Text { get; set; }
             public int Index { get; set; }
-            private SimonSays gameInstance;
+
+            private readonly SimonSays gameInstance;
 
             public Button(string buttonText, int index, SimonSays game)
             {
@@ -46,11 +46,13 @@ namespace PSInzinerija1.Components.Pages.SimonSays
                 await gameInstance.HandleTileClick(Index - 1);
             }
 
-            public async Task FlashButton()
+            public async Task FlashButton(Action cb)
             {
                 Color = "blue";
-                await Task.Delay(200);
+                cb.Invoke();
+                await Task.Delay(400);
                 Color = "white";
+                cb.Invoke();
             }
         }
 
@@ -80,8 +82,8 @@ namespace PSInzinerija1.Components.Pages.SimonSays
 
             foreach (int index in Sequence)
             {
-                var button = Buttons[index - 1];
-                await button.FlashButton();
+                var button = Buttons[index - 1]; // adjusting for 0-based indexing
+                await button.FlashButton(StateHasChanged);
             }
             IsShowingSequence = false;
         }
