@@ -35,14 +35,16 @@ namespace PSInzinerija1.Components.Pages.SimonSays
                 gameInstance = game;
             }
 
-            public async Task OnClick()
+            public async Task OnClick(Action cb2)
             {
                 if (gameInstance.IsShowingSequence || gameInstance.GameOver)
                     return;
 
                 Color = "blue";
+                cb2.Invoke();
                 await Task.Delay(100);
                 Color = "white";
+                cb2.Invoke();
                 await gameInstance.HandleTileClick(Index - 1);
             }
 
@@ -84,6 +86,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
             {
                 var button = Buttons[index - 1]; // adjusting for 0-based indexing
                 await button.FlashButton(StateHasChanged);
+                await Task.Delay(200);
             }
             IsShowingSequence = false;
         }
@@ -104,6 +107,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
             if (PlayerInput.Count == Sequence.Count)
             {
                 Level++;
+                await Task.Delay(200);
                 PlayerInput.Clear();
                 await GenerateSequence();
             }

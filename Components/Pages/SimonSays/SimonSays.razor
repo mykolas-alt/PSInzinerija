@@ -7,6 +7,7 @@
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 300px; margin: 0 auto">
     @foreach (var button in Buttons)
     {
-        <button style="background-color:@button.Color;" @onclick="button.OnClick">@button.Text</button>
+        <button style="background-color:@button.Color;"
+            @onclick="async () => await button.OnClick(StateHasChanged)">@button.Text</button>
     }
 </div>
