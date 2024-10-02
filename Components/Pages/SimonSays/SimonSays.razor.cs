@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace PSInzinerija1.Components.Pages.SimonSays
 {
-    public partial class SimonSays
+    public partial class SimonSays 
     {
         public List<int> Sequence { get; private set; } = new List<int>();
         public int Level { get; private set; } = 0;
@@ -22,10 +22,10 @@ namespace PSInzinerija1.Components.Pages.SimonSays
 
         public class Button
         {
-            public string Color { get; set; } = "white";
+
+            public string colorClass { get; set; }= "buttonDefault";
             public string Text { get; set; }
             public int Index { get; set; }
-
             private readonly SimonSays gameInstance;
 
             public Button(string buttonText, int index, SimonSays game)
@@ -40,20 +40,20 @@ namespace PSInzinerija1.Components.Pages.SimonSays
                 if (gameInstance.IsShowingSequence || gameInstance.GameOver)
                     return;
 
-                Color = "blue";
+                colorClass += " pressed valid";
                 cb2.Invoke();
                 await Task.Delay(100);
-                Color = "white";
+                colorClass = "buttonDefault";
                 cb2.Invoke();
                 await gameInstance.HandleTileClick(Index - 1);
             }
 
             public async Task FlashButton(Action cb)
             {
-                Color = "blue";
+                colorClass += " pressed valid";
                 cb.Invoke();
                 await Task.Delay(400);
-                Color = "white";
+                colorClass = "buttonDefault";
                 cb.Invoke();
             }
         }
