@@ -35,26 +35,26 @@ namespace PSInzinerija1.Components.Pages.SimonSays
                 gameInstance = game;
             }
 
-            public async Task OnClick(Action cb2)
+            public async Task OnClick(Action buttonPressed)
             {
                 if (gameInstance.IsShowingSequence || gameInstance.GameOver)
                     return;
 
                 colorClass += " pressed valid";
-                cb2.Invoke();
+                buttonPressed.Invoke();
                 await Task.Delay(100);
                 colorClass = "buttonDefault";
-                cb2.Invoke();
+                buttonPressed.Invoke();
                 await gameInstance.HandleTileClick(Index - 1);
             }
 
-            public async Task FlashButton(Action cb)
+            public async Task FlashButton(Action colorChanged)
             {
                 colorClass += " pressed valid";
-                cb.Invoke();
+                colorChanged.Invoke();
                 await Task.Delay(400);
                 colorClass = "buttonDefault";
-                cb.Invoke();
+                colorChanged.Invoke();
             }
         }
 
