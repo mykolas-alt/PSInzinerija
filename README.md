@@ -26,4 +26,4 @@ Web application, kuriame galima žaisti įvairius kognityvinius gebėjimus lavin
 ## Naudojamos technologijos
 - ASP.NET (back-end)
 - Blazor (front-end)
-- PostgreSQL (db)
+- SQLite (db)
