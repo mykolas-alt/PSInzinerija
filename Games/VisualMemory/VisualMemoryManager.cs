@@ -1,17 +1,18 @@
 using System.Text.Json;
 
+using PSInzinerija1.Enums;
 using PSInzinerija1.Games.VisualMemory.Models;
 
 namespace PSInzinerija1.Games.VisualMemory
 {
     public class VisualMemoryManager : IGameManager
     {
-        private record VisualMemoryStats(int HighScore);
+        public record VisualMemoryStats(int HighScore);
 
         public int Score { get; private set; } = 0;
         public int HighScore { get; private set; } = 0;
         public Pattern Pattern { get; private set; } = new();
-        public string GameID => "visual-memory";
+        public AvailableGames GameID => AvailableGames.VisualMemory;
         public string SerializedStatistics
         {
             get
@@ -127,6 +128,17 @@ namespace PSInzinerija1.Games.VisualMemory
             {
                 HighScore = stats.HighScore;
             }
+        }
+
+        public bool SetHighScore(int? highScore)
+        {
+            if (highScore == null || highScore.Value < HighScore)
+            {
+                return false;
+            }
+
+            HighScore = highScore.Value;
+            return true;
         }
     }
 }
