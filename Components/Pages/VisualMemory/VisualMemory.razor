@@ -4,7 +4,7 @@
 
 <PageTitle>VisualMemory</PageTitle>
 
-<h1 >High-score: @Manager.HighScore <span style="float: right;">Score: @Manager.Score</span></h1>
+<h1 >High-score: @Manager.HighScore <button @onclick="async () => await DeleteHS(Manager)">Delete from db</button><span style="float: right;">Score: @Manager.Score</span></h1>
 
 <div style="display: grid; height: 75vmin; grid-gap: 1%; grid-template-rows: repeat(@Manager.Pattern.GridSize, 1fr); grid-template-columns: repeat(@Manager.Pattern.GridSize, 1fr);">
     @foreach (var button in Manager.Pattern) {

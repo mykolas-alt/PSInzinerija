@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Authentication;
-
 namespace PSInzinerija1.Components.Pages.SimonSays
 {
-    public partial class SimonSays 
+    public partial class SimonSays
     {
         public List<int> Sequence { get; private set; } = new List<int>();
         public int Level { get; private set; } = 0;
@@ -23,7 +21,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         public class Button
         {
 
-            public string colorClass { get; set; }= "buttonDefault";
+            public string colorClass { get; set; } = "buttonDefault";
             public string Text { get; set; }
             public int Index { get; set; }
             private readonly SimonSays gameInstance;
