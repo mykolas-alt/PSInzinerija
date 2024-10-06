@@ -3,6 +3,6 @@
     public enum AvailableGames
     {
         VisualMemory = 1,
-        SimonSay = 2
+        SimonSays = 2
     }
 }
