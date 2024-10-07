@@ -1,12 +1,33 @@
 @page "/SimonSays"
 
+
+
 <PageTitle>SimonSays</PageTitle>
 
 <h1>SimonSays</h1>
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: 50vh; margin: 0 auto; height: 50vh">
-    @foreach (var button in Buttons)
+<!-- @if (!rulesAcknowledged)
     {
-        <button class="@button.colorClass" @onclick="async () => await button.OnClick(StateHasChanged)">@button.Text</button>
+    @if (!string.IsNullOrEmpty(rules))
+    {
+        <div class="modal">
+            <div class="modal-content">
+                <h2>Game Rules</h2>
+                <p>@rules</p>
+                <button @onclick="AcknowledgeRules">I Understand the Rules</button>
+            </div>
+        </div>
     }
-</div>
+} -->
+<!-- else
+{ -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: 50vh; margin: 0 auto; height: 50vh">
+        @foreach (var button in Buttons)
+        {
+            <button class="@button.colorClass" @onclick="async () => await button.OnClick(StateHasChanged)">@button.Text</button>
+        }
+    </div>
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <button style="width: 250px; height: 100px; font-size: 16px;" class="buttonDefault start" @onclick="StartNewGame">Start Game</button>
+    </div>
+    
+<!-- } -->

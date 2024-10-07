@@ -13,6 +13,8 @@ var configuration = builder.Configuration;
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IHighScoreAPIService, HighScoreAPIService>();
+builder.Services.AddScoped<IGameRulesAPIService, GameRulesAPIService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();

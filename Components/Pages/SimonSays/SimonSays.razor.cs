@@ -1,9 +1,13 @@
-using Microsoft.AspNetCore.Authentication;
 
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Authentication;
+using PSInzinerija1.Services;
 namespace PSInzinerija1.Components.Pages.SimonSays
 {
     public partial class SimonSays 
     {
+
+
         public List<int> Sequence { get; private set; } = new List<int>();
         public int Level { get; private set; } = 0;
         public List<int> PlayerInput { get; private set; } = new List<int>();
@@ -12,12 +16,30 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         public bool IsShowingSequence { get; private set; } = false;
         private readonly Random rand = new Random();
         private readonly SimonSays game;
+        private bool loading = true;
+        private string? rules;
+        private bool rulesAcknowledged = false;
+
         public SimonSays()
         {
             game = this;
             Buttons = Enumerable.Range(1, 9)
                 .Select(index => new Button(index.ToString(), index, game))
                 .ToList();
+        }
+
+
+        [Inject]
+        public IGameRulesAPIService GameRulesService { get; set; } = null!;
+
+        protected override async Task OnInitializedAsync()
+        {
+            rules = await GameRulesService.GetGameRulesAsync();
+        }
+
+        private void AcknowledgeRules()
+        {
+            rulesAcknowledged = true;
         }
 
         public class Button
@@ -34,6 +56,8 @@ namespace PSInzinerija1.Components.Pages.SimonSays
                 Index = index;
                 gameInstance = game;
             }
+
+
 
             public async Task OnClick(Action buttonPressed)
             {
@@ -58,10 +82,10 @@ namespace PSInzinerija1.Components.Pages.SimonSays
             }
         }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await game.StartNewGame();
-        }
+        // protected override async Task OnInitializedAsync()
+        // {
+        //     await StartNewGame();
+        // }
 
         public async Task StartNewGame()
         {
