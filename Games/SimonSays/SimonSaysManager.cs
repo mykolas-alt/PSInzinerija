@@ -43,7 +43,7 @@ namespace PSInzinerija1.Games.SimonSays
             foreach (int index in Sequence)
             {
                 var button = Buttons[index - 1]; // adjusting for 0-based indexing
-                await button.FlashButton(OnStateChanged!); // not null, because assigned value StateHasChanged
+                await button.FlashButton(OnStateChanged); // not null, because assigned value StateHasChanged
                 await Task.Delay(200);
             }
             IsShowingSequence = false;

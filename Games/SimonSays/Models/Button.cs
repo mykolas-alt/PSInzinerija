@@ -27,13 +27,13 @@ namespace PSInzinerija1.Games.SimonSays.Models
             await gameInstance.HandleTileClick(Index - 1);
         }
 
-        public async Task FlashButton(Action colorChanged)
+        public async Task FlashButton(Action? colorChanged)
         {
             IsLit = true;
-            colorChanged.Invoke();
+            colorChanged?.Invoke();
             await Task.Delay(400);
             IsLit = false;
-            colorChanged.Invoke();
+            colorChanged?.Invoke();
         }
     }
 }
