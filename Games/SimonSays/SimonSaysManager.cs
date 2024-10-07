@@ -6,12 +6,13 @@ namespace PSInzinerija1.Games.SimonSays
     {
         public List<int> Sequence { get; private set; } = new List<int>();
         public int Level { get; private set; } = 0;
+        public int HighScore { get; private set; } = 0;
         public List<int> PlayerInput { get; private set; } = new List<int>();
         public bool GameOver { get; private set; } = false;
         public List<Button> Buttons { get; private set; }
         public bool IsShowingSequence { get; private set; } = false;
         private readonly Random rand = new Random();
-        public Action StateHasChanged { get; set; } = default!;
+        public Action? OnStateChanged { get; set; }
 
         public SimonSaysManager()
         {
@@ -42,7 +43,7 @@ namespace PSInzinerija1.Games.SimonSays
             foreach (int index in Sequence)
             {
                 var button = Buttons[index - 1]; // adjusting for 0-based indexing
-                await button.FlashButton(StateHasChanged);
+                await button.FlashButton(OnStateChanged!); // not null, because assigned value StateHasChanged
                 await Task.Delay(200);
             }
             IsShowingSequence = false;
@@ -57,7 +58,12 @@ namespace PSInzinerija1.Games.SimonSays
 
             if (!IsInputCorrect())
             {
+                if (Level > HighScore)
+                {
+                    HighScore = Level - 1;
+                }
                 GameOver = true;
+                await StartNewGame();
                 return;
             }
 

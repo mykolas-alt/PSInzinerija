@@ -4,9 +4,16 @@
 
 <h1>SimonSays</h1>
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: 50vh; margin: 0 auto; height: 50vh">
+<div style="text-align: left;">
+    <h2>High Score: @HighScore</h2>
+    <h2>Score: @Level</h2>
+</div>
+
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: 50vh; margin: 0 auto; height: 50vh; position: relative;">
     @foreach (var button in Buttons)
     {
-        <button class="@button.colorClass" @onclick="async () => await button.OnClick(StateHasChanged)">@button.Text</button>
+        var buttonClass = button.IsLit ? "buttonDefault pressed valid" : "buttonDefault";
+        <button class="@buttonClass" @onclick="async () => await button.OnClick(StateHasChanged)">@button.Text</button>
     }
 </div>
