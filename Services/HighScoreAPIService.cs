@@ -1,16 +1,15 @@
-﻿using PSInzinerija1.Enums;
-using PSInzinerija1.Models;
+﻿using System.Text;
+
+using PSInzinerija1.Data.Models;
+using PSInzinerija1.Enums;
 
 namespace PSInzinerija1.Services
 {
-    public class HighScoreAPIService(IHttpClientFactory httpClientFactory) : IHighScoreAPIService
+    public class HighScoreAPIService(HttpClient httpClient)
     {
-        public async Task<int?> GetHighScoreAsync(AvailableGames gameId, long userId)
+        public async Task<int?> GetHighScoreAsync(AvailableGames game)
         {
-            var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri("http://localhost:5181");
-
-            string requestUri = $"/api/highscores/{gameId}/{userId}";
+            string requestUri = $"/api/highscores/{game}";
             var res = await httpClient.GetAsync(requestUri);
 
             if (res.IsSuccessStatusCode)
@@ -22,13 +21,17 @@ namespace PSInzinerija1.Services
             return null;
         }
 
-        public async Task<bool> SaveHighScoreToDbAsync(HighScoresEntry entry)
+        public async Task<bool> DeleteFromDbAsync(AvailableGames game)
         {
-            var httpClient = httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri("http://localhost:5181");
+            var res = await httpClient.DeleteAsync($"/api/highscores/{game}");
 
-            var content = JsonContent.Create(entry);
-            var res = await httpClient.PutAsync($"/api/highscores/{entry.GameId}/{entry.Id}", content);
+            return res.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> SaveHighScoreToDbAsync(AvailableGames game, int newHighScore)
+        {
+            var content = new StringContent(newHighScore.ToString(), Encoding.UTF8, "application/json");
+            var res = await httpClient.PutAsync($"/api/highscores/{game}", content);
 
             return res.IsSuccessStatusCode;
         }
