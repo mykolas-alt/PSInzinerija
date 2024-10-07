@@ -23,7 +23,7 @@ namespace PSInzinerija1.Games.SimonSays
 
         public async Task StartNewGame()
         {
-            Level = 1;
+            Level = 0;
             Sequence.Clear();
             PlayerInput.Clear();
             GameOver = false;
@@ -43,7 +43,7 @@ namespace PSInzinerija1.Games.SimonSays
             foreach (int index in Sequence)
             {
                 var button = Buttons[index - 1]; // adjusting for 0-based indexing
-                await button.FlashButton(OnStateChanged); // not null, because assigned value StateHasChanged
+                await button.FlashButton(OnStateChanged);
                 await Task.Delay(200);
             }
             IsShowingSequence = false;
@@ -60,7 +60,7 @@ namespace PSInzinerija1.Games.SimonSays
             {
                 if (Level > HighScore)
                 {
-                    HighScore = Level - 1;
+                    HighScore = Level;
                 }
                 GameOver = true;
                 await StartNewGame();
