@@ -13,14 +13,16 @@ namespace PSInzinerija1.Games.SimonSays
         public bool IsShowingSequence { get; private set; } = false;
         private readonly Random rand = new Random();
         public Action? OnStateChanged { get; set; }
-        public string rules = "";
         public bool IsDisabled {get; set;} = false;
-
+        
+        
+        
         public SimonSaysManager()
         {
             Buttons = Enumerable.Range(1, 9)
-                .Select(index => new Button(index.ToString(), index, this))
+                .Select(index => new Button("", index, this))
                 .ToList();
+            
         }
         
 

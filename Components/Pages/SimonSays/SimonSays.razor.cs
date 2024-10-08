@@ -9,13 +9,16 @@ namespace PSInzinerija1.Components.Pages.SimonSays
 {
     public partial class SimonSays 
     {
+        
         private readonly SimonSaysManager gameManager = new SimonSaysManager();
         [Inject]
         public GameRulesAPIService GameRulesService { get; set; } = null!;
+        rulesReader ruleGetter = new rulesReader();
         protected override async Task OnInitializedAsync()
         {
+            
             gameManager.OnStateChanged = StateHasChanged;
-            gameManager.rules = await GameRulesService.GetGameRulesAsync();
+            ruleGetter = await GameRulesService.GetGameRulesAsync();
             //await gameManager.StartNewGame();
         }
     }
