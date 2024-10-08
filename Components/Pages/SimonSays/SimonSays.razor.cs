@@ -19,6 +19,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         private bool loading = true;
         private string? rules;
         private bool rulesAcknowledged = false;
+        private string disabledButton = "false";
 
         public SimonSays()
         {
