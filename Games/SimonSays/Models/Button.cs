@@ -1,3 +1,4 @@
+
 namespace PSInzinerija1.Games.SimonSays.Models
 {
     public class Button
@@ -27,13 +28,19 @@ namespace PSInzinerija1.Games.SimonSays.Models
             await gameInstance.HandleTileClick(Index - 1);
         }
 
-        public async Task FlashButton(Action? colorChanged)
+        public async Task FlashButton(Action? colorChanged, int duration = 400, int delayBeforeFlash = 0, bool disableButton = false)
         {
+            await Task.Delay(delayBeforeFlash); 
             IsLit = true;
+            if (disableButton)  
+                gameInstance.IsShowingSequence = true; // If sequence is showingsequence is set true button cant be clicked
+            
             colorChanged?.Invoke();
-            await Task.Delay(400);
+            await Task.Delay(duration);
             IsLit = false;
             colorChanged?.Invoke();
+            if (disableButton)
+                gameInstance.IsShowingSequence = false;        
         }
     }
 }

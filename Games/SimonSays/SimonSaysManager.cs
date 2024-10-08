@@ -10,7 +10,7 @@ namespace PSInzinerija1.Games.SimonSays
         public List<int> PlayerInput { get; private set; } = new List<int>();
         public bool GameOver { get; private set; } = false;
         public List<Button> Buttons { get; private set; }
-        public bool IsShowingSequence { get; private set; } = false;
+        public bool IsShowingSequence { get; set; } = false;
         private readonly Random rand = new Random();
         public Action? OnStateChanged { get; set; }
 
@@ -40,11 +40,12 @@ namespace PSInzinerija1.Games.SimonSays
         {
             IsShowingSequence = true;
 
-            foreach (int index in Sequence)
-            {
-                var button = Buttons[index - 1]; // adjusting for 0-based indexing
-                await button.FlashButton(OnStateChanged);
-                await Task.Delay(200);
+           foreach (int index in Sequence)
+           {
+                var button = Buttons[index - 1];
+                int levelBasedDelay = Math.Max(200 - (Level * 10), 50);
+                int levelBasedFlash = Math.Max(400 - (Level * 20), 100);
+                await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration:levelBasedFlash);
             }
             IsShowingSequence = false;
         }
