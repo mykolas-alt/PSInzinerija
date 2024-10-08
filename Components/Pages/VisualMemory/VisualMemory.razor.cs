@@ -5,7 +5,6 @@ using PSInzinerija1.Enums;
 using PSInzinerija1.Extensions;
 using PSInzinerija1.Games;
 using PSInzinerija1.Games.VisualMemory;
-using PSInzinerija1.Models;
 using PSInzinerija1.Services;
 
 namespace PSInzinerija1.Components.Pages.VisualMemory
@@ -14,7 +13,7 @@ namespace PSInzinerija1.Components.Pages.VisualMemory
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         [Inject]
-        IHighScoreAPIService HighScoreAPIService { get; set; }
+        HighScoreAPIService HighScoreAPIService { get; set; }
         [Inject]
         ProtectedSessionStorage SessionStorage { get; set; }
         VisualMemoryManager Manager { get; set; }
@@ -43,21 +42,22 @@ namespace PSInzinerija1.Components.Pages.VisualMemory
         // TODO: iskelti kitur
         private async Task SaveToDB(IGameManager gameManager)
         {
-            var item = new HighScoresEntry()
-            {
-                Id = 1, // pakeisti i naudotojo id
-                GameId = AvailableGames.VisualMemory,
-                HighScore = Manager.HighScore,
-            };
-            var res = await HighScoreAPIService.SaveHighScoreToDbAsync(item);
+            var highScore = Manager.HighScore;
+            var res = await HighScoreAPIService.SaveHighScoreToDbAsync(gameManager.GameID, highScore);
 
             Console.WriteLine(res ? "Saved to database." : "Failed to save to database.");
         }
 
+        private async Task DeleteHS(IGameManager gameManager)
+        {
+            var res = await HighScoreAPIService.DeleteFromDbAsync(gameManager.GameID);
+
+            Console.WriteLine(res ? "Deleted successfully" : "Failed to delete");
+        }
+
         private async Task FetchDataAsync()
         {
-            // TODO: pakeisti i vartotojo id
-            var res = await HighScoreAPIService.GetHighScoreAsync(AvailableGames.VisualMemory, 1);
+            var res = await HighScoreAPIService.GetHighScoreAsync(AvailableGames.VisualMemory);
             if (res != null)
             {
                 Manager.SetHighScore(res.Value);

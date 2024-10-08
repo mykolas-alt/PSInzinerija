@@ -6,17 +6,11 @@
 <h4>Please fill in the boxes below.</h4>
 <div style="color: red;">Boxes marked with * are mandatory.</div><br>
 
-<form method="post" action="/Register">
+<form method="post" action="/register">
     <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px; width: 100px;">
 
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name">
-
-            <label for="age">Age:</label>
-            <input type="number" name="age" min="0">
-
-            <label for="username">*Username:</label>
-            <input type="text" id="username" name="username" required>
+            <label for="email">*Email:</label>
+            <input type="text" id="email" name="email" required>
 
             <label for="password">*Password:</label>
             <input type="password" id="password" name="password" required>
