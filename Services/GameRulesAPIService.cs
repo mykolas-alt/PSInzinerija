@@ -6,24 +6,30 @@ namespace PSInzinerija1.Services
 {
     public class GameRulesAPIService(HttpClient httpClient)
     {
+        public struct rulesReader
+        {
+            public string rules;
+            public HttpResponseMessage res;
+            public string requestUri;
+        }
         public async Task<string?> GetGameRulesAsync()
         {
-            string requestUri = "api/gamerules/stream";
-            var res = await httpClient.GetAsync(requestUri);
-            var str = "";
-            if (res.IsSuccessStatusCode)
+            rulesReader ruleGetter = new rulesReader() {rules = "", requestUri = "api/gamerules/stream",};
+            ruleGetter.res = await httpClient.GetAsync(ruleGetter.requestUri);
+            
+            if (ruleGetter.res.IsSuccessStatusCode)
             {
-                using (var stream = await res.Content.ReadAsStreamAsync())
+                    using(var stream = await ruleGetter.res.Content.ReadAsStreamAsync())
                     using (var reader = new StreamReader(stream))
                     {
-                        str = await reader.ReadToEndAsync();
+                        ruleGetter.rules = await reader.ReadToEndAsync();
                     }
-                return str;
+                return ruleGetter.rules;
             }
             else
             {
-                str = "Failed to load game rules.";
-                return str;
+                ruleGetter.rules = "Failed to load game rules.";
+                return ruleGetter.rules;
             }
         }
     }

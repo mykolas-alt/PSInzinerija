@@ -14,7 +14,7 @@ namespace PSInzinerija1.Games.SimonSays
         private readonly Random rand = new Random();
         public Action? OnStateChanged { get; set; }
         public string rules = "";
-        
+        public bool IsDisabled {get; set;} = false;
 
         public SimonSaysManager()
         {
@@ -67,9 +67,10 @@ namespace PSInzinerija1.Games.SimonSays
                 }
                 GameOver = true;
                 Level = 0;
-                await Task.Delay(1000);
+                IsDisabled = false;
+                // await Task.Delay(1000);
 
-                await StartNewGame();
+                // await StartNewGame();
                 return;
             }
 
