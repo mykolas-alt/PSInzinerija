@@ -17,7 +17,7 @@
     }
 </div>
     <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 3em;">
-        <button   class="buttonDefault start" disabled = "@gameManager.IsDisabled" @onclick="@(async () => {await gameManager.StartNewGame(); @gameManager.IsDisabled=true;})">New Game</button>
+        <button   class="buttonDefault start" disabled = "@gameManager.IsDisabled" @onclick="@(async () => {@gameManager.IsDisabled=true; await gameManager.StartNewGame();})">New Game</button>
         
     </div>
 
