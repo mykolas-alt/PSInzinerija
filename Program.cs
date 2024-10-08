@@ -15,7 +15,10 @@ var configuration = builder.Configuration;
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddScoped<IGameRulesAPIService, GameRulesAPIService>();
+builder.Services.AddHttpClient<GameRulesAPIService>(options =>
+{
+    options.BaseAddress = new Uri("http://localhost:5181");
+}).AddHeaderPropagation();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication()

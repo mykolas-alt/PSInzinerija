@@ -13,6 +13,8 @@ namespace PSInzinerija1.Games.SimonSays
         public bool IsShowingSequence { get; private set; } = false;
         private readonly Random rand = new Random();
         public Action? OnStateChanged { get; set; }
+        public string rules = "";
+        
 
         public SimonSaysManager()
         {
@@ -20,6 +22,7 @@ namespace PSInzinerija1.Games.SimonSays
                 .Select(index => new Button(index.ToString(), index, this))
                 .ToList();
         }
+        
 
         public async Task StartNewGame()
         {

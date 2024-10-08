@@ -4,23 +4,27 @@
 
 <PageTitle>SimonSays</PageTitle>
 
-<h1>SimonSays</h1>
+    <h2>Simon Says</h2>
 
-<div style="text-align: left;">
     <h2>High Score: @gameManager.HighScore</h2>
-    
     <h2>Score: @gameManager.Level</h2>
-</div>
 
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: 50vh; margin: 0 auto; height: 50vh; position: relative;">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: 48vh; margin: 0 auto; height: 48vh; position: relative;">
     @foreach (var button in gameManager.Buttons)
     {
         var buttonClass = button.IsLit ? "buttonDefault pressed valid" : "buttonDefault";
         <button class="@buttonClass" @onclick="async () => await button.OnClick(StateHasChanged)">@button.Text</button>
     }
 </div>
-    <div style="display: flex; justify-content: center; margin-top: 20px;">
-        <button style="width: 250px; height: 100px; font-size: 16px;"  class="buttonDefault start" @onclick="@(() => {gameManager.StartNewGame();})">New Game</button>
+    <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 3em;">
+        <button   class="buttonDefault start" @onclick="@(async () => await gameManager.StartNewGame())">New Game</button>
+        
     </div>
+
+@if(@gameManager.rules == null)
+{}
+else{
+<h2>Žaidimo taisyklės</h2>
+<p>@gameManager.rules</p>
+}
 

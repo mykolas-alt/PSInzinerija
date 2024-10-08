@@ -1,49 +1,33 @@
+using System.Text;
 using PSInzinerija1.Enums;
 
 
 namespace PSInzinerija1.Services
 {
-    public class GameRulesAPIService : IGameRulesAPIService
+    public class GameRulesAPIService(HttpClient httpClient)
     {
-        private readonly IHttpClientFactory httpClientFactory;
-
-        public GameRulesAPIService(IHttpClientFactory httpClientFactory) 
-        {
-            this.httpClientFactory = httpClientFactory;
-        }
-
-        private string? rules;
-
         public async Task<string?> GetGameRulesAsync()
         {
-            try
+            string requestUri = "api/gamerules/stream";
+            var res = await httpClient.GetAsync(requestUri);
+            var str = "";
+            if (res.IsSuccessStatusCode)
             {
-                var httpClient = httpClientFactory.CreateClient();
-                httpClient.BaseAddress = new Uri("http://localhost:5181");
-                var response = await httpClient.GetAsync("api/gamerules/stream");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var stream = await res.Content.ReadAsStreamAsync())
                     using (var reader = new StreamReader(stream))
                     {
-                        rules = await reader.ReadToEndAsync();
+                        str = await reader.ReadToEndAsync();
                     }
-                    return rules;
-                }
-                else
-                {
-                    rules = "Failed to load game rules.";
-                    return rules;
-                }
+                return str;
             }
-            catch (Exception ex)
+            else
             {
-                rules = $"Error: {ex.Message}";
-                return rules;
+                str = "Failed to load game rules.";
+                return str;
             }
-
-            
         }
     }
 }
+
+
+
