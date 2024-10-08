@@ -8,7 +8,7 @@ namespace PSInzinerija1.Games.SimonSays
         public int Level { get; private set; } = 0;
         public int HighScore { get; private set; } = 0;
         public List<int> PlayerInput { get; private set; } = new List<int>();
-        public bool GameOver { get; private set; } = false;
+        public bool GameOver { get; private set; } = true;
         public List<Button> Buttons { get; private set; }
         public bool IsShowingSequence { get; private set; } = false;
         private readonly Random rand = new Random();
