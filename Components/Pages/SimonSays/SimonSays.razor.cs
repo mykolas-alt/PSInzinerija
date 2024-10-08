@@ -4,7 +4,7 @@ using PSInzinerija1.Services;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Authentication;
-using PSInzinerija1.Services;
+
 namespace PSInzinerija1.Components.Pages.SimonSays
 {
     public partial class SimonSays 
@@ -13,7 +13,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         protected override async Task OnInitializedAsync()
         {
             gameManager.OnStateChanged = StateHasChanged;
-            await gameManager.StartNewGame();
+            //await gameManager.StartNewGame();
         }
     }
 }

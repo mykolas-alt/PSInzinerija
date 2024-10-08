@@ -63,6 +63,9 @@ namespace PSInzinerija1.Games.SimonSays
                     HighScore = Level;
                 }
                 GameOver = true;
+                Level = 0;
+                await Task.Delay(1000);
+
                 await StartNewGame();
                 return;
             }

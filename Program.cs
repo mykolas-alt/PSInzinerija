@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<IHighScoreAPIService, HighScoreAPIService>();
+
 builder.Services.AddScoped<IGameRulesAPIService, GameRulesAPIService>();
 
 builder.Services.AddAuthorization();
