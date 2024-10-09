@@ -1,9 +1,9 @@
 namespace PSInzinerija1
 {
-    public struct rulesReader
+    public struct GameInformation
     {
-        public string rules;
-        public string gameName;
-        public DateTime releaseDate;
+        public string rules { get; set; }
+        public string gameName  { get; set; }
+        public DateTime releaseDate { get; set; }
     }
 }

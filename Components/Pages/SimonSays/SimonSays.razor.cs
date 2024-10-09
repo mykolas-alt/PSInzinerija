@@ -13,12 +13,15 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         private readonly SimonSaysManager gameManager = new SimonSaysManager();
         [Inject]
         public GameRulesAPIService GameRulesService { get; set; } = null!;
-        rulesReader ruleGetter = new rulesReader();
+        
+        GameInformation? infoGetter = null;
+        #pragma warning disable 8600
         protected override async Task OnInitializedAsync()
         {
             
             gameManager.OnStateChanged = StateHasChanged;
-            ruleGetter = await GameRulesService.GetGameRulesAsync();
+            infoGetter = await GameRulesService.GetGameRulesAsync();
+            #pragma warning disable 8600
             //await gameManager.StartNewGame();
         }
     }

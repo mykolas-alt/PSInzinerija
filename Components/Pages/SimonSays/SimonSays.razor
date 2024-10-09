@@ -2,9 +2,9 @@
 
 @using PSInzinerija1.Games.SimonSays
 
-<PageTitle>@ruleGetter.gameName</PageTitle>
+<PageTitle>@infoGetter?.gameName</PageTitle>
 
-    <!-- <h2>@gameManager.ruleGetter.gameName</h2> -->
+    
 
     <h2>High Score: @gameManager.HighScore</h2>
     <h2>Current Score: @gameManager.Level</h2>
@@ -21,11 +21,11 @@
         
     </div>
 
-@if(@ruleGetter.rules == null)
+@if(@infoGetter == null)
 {}
 else{
-<h2>@ruleGetter.gameName Žaidimo taisyklės</h2>
-<p>@ruleGetter.rules</p>
-<h2>Žaidimo išleidimo data: @ruleGetter.releaseDate </h2>
+<h2>@infoGetter?.gameName Žaidimo taisyklės</h2>
+<p>@infoGetter?.rules</p>
+<h2>Žaidimo išleidimo data: @infoGetter?.releaseDate </h2>
 }
 

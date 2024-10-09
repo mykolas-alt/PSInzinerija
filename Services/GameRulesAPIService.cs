@@ -7,11 +7,14 @@ namespace PSInzinerija1.Services
     public class GameRulesAPIService(HttpClient httpClient)
     {
         
-        public async Task<rulesReader> GetGameRulesAsync()
+        public async Task<GameInformation> GetGameRulesAsync()
         {
-            rulesReader ruleGetter = new rulesReader() {rules = "", gameName = "", releaseDate = new DateTime()};
-            ruleGetter.gameName = "Simon Says"; 
-            ruleGetter.releaseDate = new DateTime(2024, 9, 27);
+            GameInformation infoGetter = new GameInformation
+            {
+                rules = "",
+                gameName = "Simon Says",
+                releaseDate = new DateTime(2024, 9, 27)
+            };
 
             string requestUri = "api/gamerules/stream";
             var res = await httpClient.GetAsync(requestUri);
@@ -21,14 +24,14 @@ namespace PSInzinerija1.Services
                     using(var stream = await res.Content.ReadAsStreamAsync())
                     using (var reader = new StreamReader(stream))
                     {
-                        ruleGetter.rules = await reader.ReadToEndAsync();
+                        infoGetter.rules = await reader.ReadToEndAsync();
                     }
-                return ruleGetter;
+                return infoGetter;
             }
             else
             {
-                ruleGetter.rules = "Failed to load game rules.";
-                return ruleGetter;
+                infoGetter.rules = "Failed to load game rules.";
+                return infoGetter;
             }
         }
     }
