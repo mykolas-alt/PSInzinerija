@@ -9,7 +9,7 @@ namespace PSInzinerija1.Services
         
         public async Task<GameInformation> GetGameRulesAsync()
         {
-            GameInformation infoGetter = new GameInformation
+            GameInformation gameInfo = new GameInformation
             {
                 rules = "",
                 gameName = "Simon Says",
@@ -24,14 +24,14 @@ namespace PSInzinerija1.Services
                     using(var stream = await res.Content.ReadAsStreamAsync())
                     using (var reader = new StreamReader(stream))
                     {
-                        infoGetter.rules = await reader.ReadToEndAsync();
+                        gameInfo.rules = await reader.ReadToEndAsync();
                     }
-                return infoGetter;
+                return gameInfo;
             }
             else
             {
-                infoGetter.rules = "Failed to load game rules.";
-                return infoGetter;
+                gameInfo.rules = "Failed to load game rules.";
+                return gameInfo;
             }
         }
     }

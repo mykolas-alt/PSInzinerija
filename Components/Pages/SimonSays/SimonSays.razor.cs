@@ -14,14 +14,14 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         [Inject]
         public GameRulesAPIService GameRulesService { get; set; } = null!;
         
-        GameInformation? infoGetter = null;
-        #pragma warning disable 8600
+        GameInformation? gameInfo = null;
+        
         protected override async Task OnInitializedAsync()
         {
-            
-            gameManager.OnStateChanged = StateHasChanged;
-            infoGetter = await GameRulesService.GetGameRulesAsync();
-            #pragma warning disable 8600
+            #pragma warning disable CS8600
+            gameManager.OnStateChanged = StateHasChanged; 
+            gameInfo = await GameRulesService.GetGameRulesAsync();
+            #pragma warning restore CS8600
             //await gameManager.StartNewGame();
         }
     }
