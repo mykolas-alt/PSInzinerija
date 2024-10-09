@@ -16,5 +16,7 @@ namespace PSInzinerija1.Data.Models
         public int HighScore { get; set; }
         [Column("game_id")]
         public AvailableGames GameId { get; set; }
+        [Column("record_date")]
+        public DateTime RecordDate { get; set; }
     }
 }

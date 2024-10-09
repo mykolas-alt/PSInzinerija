@@ -19,10 +19,12 @@ namespace PSInzinerija1.Controllers
         /// <param name="game">One of the available games</param>
         /// <returns>A list of high score entries</returns>
         [HttpGet("{game}/all")]
-        public async Task<ActionResult<IEnumerable<HighScoresEntry>>> GetGameHighScores(AvailableGames game)
+        public async Task<ActionResult<IEnumerable<LeaderboardEntry>>> GetGameHighScores(AvailableGames game)
         {
             return await context.HighScores
                 .Where(e => e.GameId == game)
+                .Join(context.Users, e => e.Id, u => u.Id, (e, u) =>
+                    new LeaderboardEntry(u.UserName ?? "Anon", e.HighScore, e.RecordDate))
                 .ToListAsync();
         }
 

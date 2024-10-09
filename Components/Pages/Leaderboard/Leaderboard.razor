@@ -1,0 +1,23 @@
+@page "/Leaderboard"
+@using PSInzinerija1.Services
+
+<PageTitle>Leaderboard</PageTitle>
+
+<h1>Leaderboard</h1>
+Only showing records for VisualMemory
+<table>
+    @foreach (var entry in list) {
+        <li>
+            @entry.UserName, @entry.HighScore, @entry.RecordDate
+        </li>
+    }
+</table>
+
+@code {
+    [Inject]
+    HighScoreAPIService HighScoreAPI { get; set; }
+    List<LeaderboardEntry> list { get; set; } = new();
+    protected override async Task OnInitializedAsync() {
+        list = await HighScoreAPI.GetLeaderboardEntriesAsync(Enums.AvailableGames.VisualMemory);
+    }
+}    
