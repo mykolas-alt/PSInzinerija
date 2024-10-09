@@ -49,8 +49,17 @@ function onBlazorReadyReg() {
                 alert('Registration successful');
             },
             error: function (error) {
-                console.log('Registration failed:', error);
-                alert(error);
+                const errs = error.responseJSON.errors;
+                console.log('Registration failed:', errs);
+                let errorMessage = "The following errors occurred:\n";
+
+                for (const key in errs) {
+                    if (errs.hasOwnProperty(key)) {
+                        errorMessage += `${key}: ${errs[key].join(", ")}\n`;
+                    }
+                }
+
+                alert(errorMessage);
             }
         });
     });
