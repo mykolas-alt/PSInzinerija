@@ -5,13 +5,31 @@
 
 <h1>Leaderboard</h1>
 Only showing records for VisualMemory
-<table>
-    @foreach (var entry in list) {
-        <li>
-            @entry.UserName, @entry.HighScore, @entry.RecordDate
-        </li>
-    }
-</table>
+@if (list.Count != 0) {
+    <table class="table table-hover table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Email</th>
+                <th scope="col">High score</th>
+                <th scope="col">Date (UTC)</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var entry in list) {
+            <tr>
+                <td>@entry.UserName</td>
+                <td>@entry.HighScore</td>
+                <td>@entry.RecordDate</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <b>Leaderboard is empty</b>
+}
+
 
 @code {
     [Inject]

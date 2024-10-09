@@ -75,7 +75,8 @@ namespace PSInzinerija1.Controllers
             {
                 GameId = game,
                 Id = user_id,
-                HighScore = newHighScore
+                HighScore = newHighScore,
+                RecordDate = DateTime.UtcNow
             };
 
             context.Entry(entry).State = EntryExists(user_id, entry.GameId) ?
