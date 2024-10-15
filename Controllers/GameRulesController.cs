@@ -20,7 +20,7 @@ public class GameRulesController : ControllerBase
     public async Task<ActionResult<string>> GetRulesAsync()
     {
         return await _gameRulesService.GetGameRulesAsync() is { rules: { Length: > 0 } } gameInfo // is yra pattern matching, kuris patikrina ar rules yra ne tuscias
-            ? gameInfo.rules
+            ? Ok(gameInfo)
             : NotFound("Game rules not found."); //grazina 404 jei taisykles nerandamos
     }
 }
