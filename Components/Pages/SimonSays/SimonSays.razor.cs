@@ -12,7 +12,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         
         private readonly SimonSaysManager gameManager = new SimonSaysManager();
         [Inject]
-        public GameRulesAPIService GameRulesService { get; set; } = null!;
+        public GameRulesAPIService gameRulesService { get; set; } = null!;
         
         GameInformation? gameInfo = null;
         
@@ -20,7 +20,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         {
             #pragma warning disable CS8600
             gameManager.OnStateChanged = StateHasChanged; 
-            gameInfo = await GameRulesService.GetGameRulesAsync();
+            gameInfo = await gameRulesService.GetGameRulesAsync();
             #pragma warning restore CS8600
             //await gameManager.StartNewGame();
         }
