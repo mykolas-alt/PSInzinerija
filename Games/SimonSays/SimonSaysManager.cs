@@ -13,18 +13,14 @@ namespace PSInzinerija1.Games.SimonSays
         public bool IsShowingSequence { get; set; } = false;
         private readonly Random rand = new Random();
         public Action? OnStateChanged { get; set; }
-        public bool IsDisabled {get; set;} = false;
-        
-        
-        
+        public bool IsDisabled { get; set; } = false;
+
         public SimonSaysManager()
         {
             Buttons = Enumerable.Range(1, 9)
                 .Select(index => new Button("", index, this))
                 .ToList();
-            
         }
-        
 
         public async Task StartNewGame()
         {
@@ -45,12 +41,12 @@ namespace PSInzinerija1.Games.SimonSays
         {
             IsShowingSequence = true;
 
-           foreach (int index in Sequence)
-           {
+            foreach (int index in Sequence)
+            {
                 var button = Buttons[index - 1];
                 int levelBasedDelay = Math.Max(200 - (Level * 10), 50);
                 int levelBasedFlash = Math.Max(400 - (Level * 20), 100);
-                await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration:levelBasedFlash);
+                await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration: levelBasedFlash);
             }
             IsShowingSequence = false;
         }
@@ -59,7 +55,7 @@ namespace PSInzinerija1.Games.SimonSays
         {
             if (GameOver) return;
 
-            int playerInputTile = tileIndex + 1; // +1, because 0-based indexing
+            int playerInputTile = tileIndex + 1;
             PlayerInput.Add(playerInputTile);
 
             if (!IsInputCorrect())
@@ -71,9 +67,6 @@ namespace PSInzinerija1.Games.SimonSays
                 GameOver = true;
                 Level = 0;
                 IsDisabled = false;
-                // await Task.Delay(1000);
-
-                // await StartNewGame();
                 return;
             }
 
@@ -89,7 +82,6 @@ namespace PSInzinerija1.Games.SimonSays
         private bool IsInputCorrect()
         {
             int currentInputIndex = PlayerInput.Count - 1;
-            if (currentInputIndex >= Sequence.Count) return false;
             return PlayerInput[currentInputIndex] == Sequence[currentInputIndex];
         }
     }
