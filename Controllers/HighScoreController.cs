@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using PSInzinerija1.Data.ApplicationDbContext;
 using PSInzinerija1.Enums;
 using PSInzinerija1.Data.Models;
+using PSInzinerija1.Services;
 
 namespace PSInzinerija1.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HighScoresController(ApplicationDbContext context, UserManager<User> userManager) : ControllerBase
+    public class HighScoresController(HighScoreService highScoreService) : ControllerBase
     {
         /// <summary>
         /// Gets all high score entries for a specific game
@@ -19,13 +20,11 @@ namespace PSInzinerija1.Controllers
         /// <param name="game">One of the available games</param>
         /// <returns>A list of high score entries</returns>
         [HttpGet("{game}/all")]
-        public async Task<ActionResult<IEnumerable<LeaderboardEntry>>> GetGameHighScores(AvailableGames game)
+        public async Task<ActionResult<IEnumerable<LeaderboardEntry>>> GetGameHighScoresAsync(AvailableGames game)
         {
-            return await context.HighScores
-                .Where(e => e.GameId == game)
-                .Join(context.Users, e => e.Id, u => u.Id, (e, u) =>
-                    new LeaderboardEntry(u.UserName ?? "Anon", e.HighScore, e.RecordDate))
-                .ToListAsync();
+            var list = await highScoreService.GetGameHighScoresAsync(game);
+
+            return list == null ? NotFound() : Ok(list);
         }
 
         /// <summary>
@@ -33,9 +32,11 @@ namespace PSInzinerija1.Controllers
         /// </summary>
         /// <returns>A list of high score entries</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HighScoresEntry>>> GetAllHighScores()
+        public async Task<ActionResult<List<HighScoresEntry>>> GetAllHighScoresAsync()
         {
-            return await context.HighScores.ToListAsync();
+            var list = await highScoreService.GetAllHighScoresAsync();
+
+            return list == null ? NotFound() : Ok(list);
         }
 
         /// <summary>
@@ -45,15 +46,11 @@ namespace PSInzinerija1.Controllers
         /// <returns>High score entry</returns>
         [Authorize]
         [HttpGet("{game}")]
-        public async Task<ActionResult<HighScoresEntry>> GetUserHighScore(AvailableGames game)
+        public async Task<ActionResult<HighScoresEntry>> GetUserHighScoreAsync(AvailableGames game)
         {
-            var user_id = userManager.GetUserId(HttpContext.User);
+            var highScore = await highScoreService.GetUserHighScoreAsync(game, HttpContext.User);
 
-            var todoItem = await context.HighScores
-                .Where(m => m.GameId == game && m.Id == user_id)
-                .SingleOrDefaultAsync();
-
-            return todoItem == null ? NotFound() : todoItem;
+            return highScore == null ? NotFound() : Ok(highScore);
         }
 
         /// <summary>
@@ -63,28 +60,12 @@ namespace PSInzinerija1.Controllers
         /// <param name="newHighScore">The new high score</param>
         [Authorize]
         [HttpPut("{game}")]
-        public async Task<IActionResult> PutUserHighScore(AvailableGames game, [FromBody] int newHighScore)
+        public async Task<ActionResult> PutUserHighScore(AvailableGames game, [FromBody] int newHighScore)
         {
-            var user_id = userManager.GetUserId(HttpContext.User);
-            if (user_id == null)
-            {
-                return BadRequest();
-            }
+            var success = await highScoreService.PutUserHighScoreAsync(game, newHighScore, HttpContext.User);
 
-            var entry = new HighScoresEntry()
-            {
-                GameId = game,
-                Id = user_id,
-                HighScore = newHighScore,
-                RecordDate = DateTime.UtcNow
-            };
-
-            context.Entry(entry).State = EntryExists(user_id, entry.GameId) ?
-                EntityState.Modified : EntityState.Added;
-
-            await context.SaveChangesAsync();
-
-            return NoContent();
+            // TODO: pateikti detalesne informacija
+            return success ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         /// <summary>
@@ -93,24 +74,13 @@ namespace PSInzinerija1.Controllers
         /// <param name="game">One of the available games</param>
         [Authorize]
         [HttpDelete("{game}")]
-        public async Task<IActionResult> DeleteUserHighScore(AvailableGames game)
+        public async Task<ActionResult> DeleteUserHighScore(AvailableGames game)
         {
-            var user_id = userManager.GetUserId(HttpContext.User);
-            var todoItem = await context.HighScores.FindAsync(user_id, game);
-            if (todoItem == null)
-            {
-                return NotFound();
-            }
+            var success = await highScoreService.DeleteUserHighScoreAsync(game, HttpContext.User);
 
-            context.HighScores.Remove(todoItem);
-            await context.SaveChangesAsync();
-
-            return NoContent();
+            // TODO: pateikti detalesne informacija
+            return success ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        private bool EntryExists(string id, AvailableGames gameId)
-        {
-            return context.HighScores.Any(e => e.GameId == gameId && e.Id == id);
-        }
     }
 }

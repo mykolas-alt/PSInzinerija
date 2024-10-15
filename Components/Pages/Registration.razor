@@ -6,18 +6,28 @@
 <h4>Please fill in the boxes below.</h4>
 <div style="color: red;">Boxes marked with * are mandatory.</div><br>
 
-<form id="registration-form" >
-        <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px; width: 100px;">
+<AuthorizeView>
+    <NotAuthorized>
+        <form id="registration-form" >
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px; width: 100px;">
 
-            <label for="email">*Email:</label>
-            <input type="text" id="email" name="email" required />
+                <label for="email">*Email:</label>
+                <input type="text" id="email" name="email" required />
 
-            <label for="password">*Password:</label>
-            <input type="text" id="password" name="password" required />
+                <label for="password">*Password:</label>
+                <input type="text" id="password" name="password" required />
 
-            <button type="submit" style="justify-self: end;">Register</button>
-        </div>
-    </form>
+                <button type="submit" style="justify-self: end;">Register</button>
+            </div>
+        </form>
+    </NotAuthorized>
+    <Authorized>
+        <h1>
+            You are already logged in!
+        </h1>
+    </Authorized>
+</AuthorizeView>
+
 
 @code {
     [Inject]

@@ -24,6 +24,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthentication()
     .AddCookie(IdentityConstants.ApplicationScheme);
 
+builder.Services.AddTransient<HighScoreService>();
+
 builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddCascadingAuthenticationState();
 
