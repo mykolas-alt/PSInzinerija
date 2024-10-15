@@ -7,9 +7,9 @@ namespace PSInzinerija1.Services
     public class GameRulesAPIService(HttpClient httpClient)
     {
         
-        public async Task<GameInfoStruct> GetGameRulesAsync()
+        public async Task<GameInfo> GetGameRulesAsync()
         {
-            GameInfoStruct gameInfo = new GameInfoStruct
+            GameInfo gameInfo = new GameInfo
             {
                 rules = "",
                 gameName = "Simon Says",

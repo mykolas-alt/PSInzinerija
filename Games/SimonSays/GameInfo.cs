@@ -1,6 +1,6 @@
 namespace PSInzinerija1.Games.SimonSays
 {
-    public struct GameInfoStruct
+    public struct GameInfo
     {
         public string rules { get; set; }
         public string gameName  { get; set; }
