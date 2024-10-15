@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Threading.Tasks;
 using PSInzinerija1.Services;
+using PSInzinerija1.Games.SimonSays;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -16,10 +17,10 @@ public class GameRulesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetRulesAsync()
+    public async Task<ActionResult<string>> GetRulesAsync()
     {
         return await _gameRulesService.GetGameRulesAsync() is { rules: { Length: > 0 } } gameInfo // is yra pattern matching, kuris patikrina ar rules yra ne tuscias
-            ? Ok(gameInfo)
+            ? gameInfo.rules
             : NotFound("Game rules not found."); //grazina 404 jei taisykles nerandamos
     }
 }

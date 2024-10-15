@@ -19,8 +19,8 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         protected override async Task OnInitializedAsync()
         {
             #pragma warning disable CS8600
-            _gameManager.OnStateChanged = StateHasChanged; 
-            _gameInfo = await gameRulesService.GetGameRulesAsync();
+            gameManager.OnStateChanged = StateHasChanged; 
+            gameInfo = await GameRulesService.GetGameRulesAsync();
             #pragma warning restore CS8600
             //await gameManager.StartNewGame();
         }
