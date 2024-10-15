@@ -10,7 +10,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
     public partial class SimonSays 
     {
         
-        private readonly SimonSaysManager _gameManager = new SimonSaysManager();
+        private readonly SimonSaysManager gameManager = new SimonSaysManager();
         [Inject]
         public GameRulesAPIService GameRulesService { get; set; } = null!;
         
