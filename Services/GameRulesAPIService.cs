@@ -1,15 +1,15 @@
 using System.Text;
 using PSInzinerija1.Enums;
-
+using PSInzinerija1.Games.SimonSays;
 
 namespace PSInzinerija1.Services
 {
     public class GameRulesAPIService(HttpClient httpClient)
     {
         
-        public async Task<GameInformation> GetGameRulesAsync()
+        public async Task<GameInfoStruct> GetGameRulesAsync()
         {
-            GameInformation gameInfo = new GameInformation
+            GameInfoStruct gameInfo = new GameInfoStruct
             {
                 rules = "",
                 gameName = "Simon Says",

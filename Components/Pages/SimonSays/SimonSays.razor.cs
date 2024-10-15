@@ -14,7 +14,7 @@ namespace PSInzinerija1.Components.Pages.SimonSays
         [Inject]
         public GameRulesAPIService GameRulesService { get; set; } = null!;
         
-        GameInformation? gameInfo = null;
+        GameInfoStruct? gameInfo = null;
         
         protected override async Task OnInitializedAsync()
         {
