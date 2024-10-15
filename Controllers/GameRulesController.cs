@@ -17,7 +17,7 @@ public class GameRulesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<string>> GetRulesAsync()
+    public async Task<ActionResult<struct>> GetRulesAsync()
     {
         return await _gameRulesService.GetGameRulesAsync() is { rules: { Length: > 0 } } gameInfo // is yra pattern matching, kuris patikrina ar rules yra ne tuscias
             ? Ok(gameInfo)
