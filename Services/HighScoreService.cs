@@ -15,11 +15,13 @@ namespace PSInzinerija1.Services
         {
             try
             {
-                var res = await context.HighScores
-                    .Where(e => e.GameId == game)
-                    .Join(context.Users, e => e.Id, u => u.Id, (e, u) =>
-                        new LeaderboardEntry(u.UserName ?? "Anon", e.HighScore, e.RecordDate))
-                    .ToListAsync();
+                var query = from a in context.HighScores.Where(e => e.GameId == game)
+                            join b in context.Users
+                                on a.Id equals b.Id
+                            orderby a.HighScore descending
+                            select new LeaderboardEntry(b.UserName ?? "Anon", a.HighScore, a.RecordDate);
+
+                var res = await query.ToListAsync();
 
                 return res;
             }
@@ -35,7 +37,7 @@ namespace PSInzinerija1.Services
         {
             try
             {
-                return await context.HighScores.ToListAsync();
+                return await context.HighScores.OrderByDescending(e => e.HighScore).ToListAsync();
             }
             catch (Exception e) when (e is OperationCanceledException || e is ArgumentNullException)
             {
