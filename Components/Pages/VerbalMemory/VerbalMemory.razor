@@ -1,0 +1,23 @@
+@page "/VerbalMemory"
+
+<PageTitle>VerbalMemory</PageTitle>
+
+
+
+<h2>High Score: @HighScore</h2>
+<h2>Current Score: @Score</h2>
+
+<div class="game-container">
+    <div class="word-display">
+        @CurrentWord
+    </div>
+
+    <div class="buttons">
+        <button class="game-button" @onclick="() => HandleButtonClick(true)">Seen</button>
+        <button class="game-button" @onclick="() => HandleButtonClick(false)">New</button>
+    </div>
+
+    <div class="mistake-counter">
+        <p>Mistakes: @MistakeCount</p>
+    </div>
+</div>
