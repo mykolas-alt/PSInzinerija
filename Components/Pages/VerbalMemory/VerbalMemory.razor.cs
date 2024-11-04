@@ -27,7 +27,6 @@ namespace PSInzinerija1.Components.Pages.VerbalMemory
                 await SaveToDB(Manager);
                 await SessionStorage.SaveStateSessionStorage(Manager);
             };
-
             await Manager.StartNewGame();
         }
 

@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-
+using PSInzinerija1.Games.VerbalMemory;
 using PSInzinerija1.Enums;
 
 namespace PSInzinerija1.Games.VerbalMemory
@@ -15,6 +15,7 @@ namespace PSInzinerija1.Games.VerbalMemory
         public int Score { get; private set; } = 0;
         public int HighScore { get; private set; } = 0;
         public event Action? OnStatisticsChanged;
+
         public AvailableGames GameID => AvailableGames.VerbalMemory;
 
         public string SerializedStatistics
@@ -32,13 +33,12 @@ namespace PSInzinerija1.Games.VerbalMemory
         }
         public async Task StartNewGame()
         {
-            WordList = GetUniqueWordsFromFile("wwwroot/GameRules/SimonSaysRules.txt");
+            WordList = await WordListLoader.GetUniqueWordsFromFile("wwwroot/GameRules/SimonSaysRules.txt");
             MistakeCount = 0;
             Score = 0;
             WordsShown.Clear();
             GameOver = false;
             ShowRandomWord();
-            await Task.CompletedTask;
         }
 
         public async Task HandleButtonClick(bool isSeen)
@@ -71,6 +71,7 @@ namespace PSInzinerija1.Games.VerbalMemory
                     OnStatisticsChanged?.Invoke();
                 }
                 GameOver = true;
+                WordList.Clear();
                 await StartNewGame();
                 return;
             }
@@ -78,7 +79,6 @@ namespace PSInzinerija1.Games.VerbalMemory
             Score++;
             WordsShown.Add(CurrentWord);
             ShowRandomWord();
-            await Task.CompletedTask;
         }
 
         private void ShowRandomWord()
@@ -86,59 +86,38 @@ namespace PSInzinerija1.Games.VerbalMemory
             if (WordList.Count > 0)
             {
                 Random random = new Random();
-                string newWord;
-                bool showSeenWord = random.Next(1, 11) < 3; // 20% chance to show a seen word, because the list is large
+                bool showSeenWord = random.Next(1, 11) < 3; // 20% chance to show a seen word
+                string newWord = CurrentWord;
 
-                if (showSeenWord && WordsShown.Count > 0)
+                while (true)
                 {
-                    do
+                    try
                     {
-                        newWord = WordsShown[random.Next(WordsShown.Count)];
-                    }
-                    while (newWord == CurrentWord && WordsShown.Count > 1); // Avoiding the same word 2 times in a row
-                }
-                else
-                {
-                    do
-                    {
-                        newWord = WordList[random.Next(WordList.Count)];
-                    }
-                    while (newWord == CurrentWord && WordList.Count > 1); // Same as above
-                }
+                        if (showSeenWord && WordsShown.Count > 2)
+                        {
+                            newWord = WordsShown[random.Next(WordsShown.Count)];
+                        }
+                        else
+                        {
+                            newWord = WordList[random.Next(WordList.Count)];
+                        }
 
-                CurrentWord = newWord;
+                        if (newWord == CurrentWord)
+                        {
+                            throw new DuplicateWordException("Selected word is the same as the previous word. Retrying...");
+                        }
+                        CurrentWord = newWord;
+                        break;
+                    }
+                    catch (DuplicateWordException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
             }
         }
 
 
-        public List<string> GetUniqueWordsFromFile(string filePath)
-        {
-            List<string> wordList = new List<string>();
-            try
-            {
-                if (File.Exists(filePath))
-                {
-                    var lines = File.ReadAllLines(filePath);
-                    wordList = lines
-                                .SelectMany(line => line.Split(new[] { ' ', ',', '.', ';', ':', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
-                                .Where(word => word.All(c => c != '!' && c != '(' && c != ')' && c != '"' && c != '\''
-                                                       && c != '-' && c != '?' && c != '[' && c != ']'
-                                                       && c != '{' && c != '}' && c != '/'))
-                                .Distinct(StringComparer.OrdinalIgnoreCase)
-                                .ToList();
-                }
-                else
-                {
-                    Console.WriteLine("File not found at path: " + filePath);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error reading file: " + ex.Message);
-            }
-
-            return wordList;
-        }
         public void LoadStatisticsFromJSON(string? json)
         {
             if (json == null)
