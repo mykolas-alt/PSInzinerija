@@ -9,7 +9,7 @@ namespace PSInzinerija1.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GameRulesController : ControllerBase
+    public class GameRulesController : BaseController
     {
 
         private readonly GameRulesAPIService _gameRulesService;
@@ -22,11 +22,8 @@ namespace PSInzinerija1.Controllers
         [HttpGet]
         public async Task<ActionResult<GameInfo>> GetRulesAsync()
         {
-            // is yra pattern matching, kuris patikrina ar rules yra ne tuscias
-            //grazina 404 jei taisykles nerandamos
-            return await _gameRulesService.GetGameRulesAsync() is { Rules.Length: > 0 } gameInfo
-                ? Ok(gameInfo)
-                : NotFound("Game rules not found.");
+            var gameInfo = await _gameRulesService.GetGameRulesAsync();
+            return HandleResponse(gameInfo, "Game rules not found.");
         }
     }
 }

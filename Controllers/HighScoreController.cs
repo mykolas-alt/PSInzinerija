@@ -12,7 +12,7 @@ namespace PSInzinerija1.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HighScoresController(HighScoreService highScoreService) : ControllerBase
+    public class HighScoresController(HighScoreService highScoreService) : BaseController
     {
         /// <summary>
         /// Gets all high score entries for a specific game
@@ -24,7 +24,7 @@ namespace PSInzinerija1.Controllers
         {
             var list = await highScoreService.GetGameHighScoresAsync(game);
 
-            return list == null ? NotFound() : Ok(list);
+            return handleResponse(list, "No high scores found");
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace PSInzinerija1.Controllers
         {
             var list = await highScoreService.GetAllHighScoresAsync();
 
-            return list == null ? NotFound() : Ok(list);
+            return handleResponse(list, "No high scores found");
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace PSInzinerija1.Controllers
         {
             var highScore = await highScoreService.GetUserHighScoreAsync(game, HttpContext.User);
 
-            return highScore == null ? NotFound() : Ok(highScore);
+            return HandleResponse(highScore, "User high score not found.");
         }
 
         /// <summary>
