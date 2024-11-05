@@ -41,7 +41,7 @@ namespace PSInzinerija1.Games.VerbalMemory
             ShowRandomWord();
         }
 
-        public async Task HandleButtonClick(bool isSeen)
+        public async Task HandleButtonClick(bool pressedSeen)
         {
             if (GameOver)
             {
@@ -50,14 +50,14 @@ namespace PSInzinerija1.Games.VerbalMemory
 
             if (WordsShown.Contains(CurrentWord))
             {
-                if (!isSeen)
+                if (!pressedSeen)
                 {
                     MistakeCount++;
                 }
             }
             else
             {
-                if (isSeen)
+                if (pressedSeen)
                 {
                     MistakeCount++;
                 }
