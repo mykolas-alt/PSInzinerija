@@ -18,7 +18,7 @@ namespace PSInzinerija1.Games.SimonSays.Models
 
         public async Task OnClick(Action buttonPressed)
         {
-            if (gameInstance.IsShowingSequence || gameInstance.GameOver || IsDisabled == true)
+            if (gameInstance.IsShowingSequence || gameInstance.GameOver || IsDisabled)
                 return;
 
             IsDisabled = true;
