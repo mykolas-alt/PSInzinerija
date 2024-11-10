@@ -3,21 +3,33 @@
 <PageTitle>Registration</PageTitle>
 
 <h1>Registration</h1><br>
-<h4>Please fill in the boxes below.</h4>
-<div style="color: red;">Boxes marked with * are mandatory.</div><br>
+<h4>Please fill in the fields below.</h4>
+<div style="color: red;">Fields marked with * are mandatory.</div><br>
 
 <AuthorizeView>
     <NotAuthorized>
-        <form id="registration-form" >
-            <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px; width: 100px;">
+        <form id="registration-form" class="w-25">
+            <div class="form-group row">
+                <label for="email" class="col-sm-2 col-form-label">*Email:</label>
+                <div>
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Enter email" required />
+                </div>
 
-                <label for="email">*Email:</label>
-                <input type="text" id="email" name="email" required />
+                <label for="username" class="col-sm-2 col-form-label">*Username:</label>
+                <div>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required />
+                </div>
 
-                <label for="password">*Password:</label>
-                <input type="text" id="password" name="password" required />
+                <label for="password" class="col-sm-2 col-form-label">*Password:</label>
+                <div>
+                    <input type="text" id="password" name="password" class="form-control" placeholder="Password" required />
+                </div>
+            </div>
 
-                <button type="submit" style="justify-self: end;">Register</button>
+            <div class="form-group row">
+                <div class="col-sm-10 m-1">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
             </div>
         </form>
     </NotAuthorized>

@@ -121,7 +121,7 @@ app.UseHeaderPropagation();
 
 app.MapSwagger();
 
-app.MapIdentityApi<User>();
+app.MapModifiedIdentityApi<User>();
 app.MapControllers();
 
 app.MapRazorComponents<App>()

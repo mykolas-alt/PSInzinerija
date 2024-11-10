@@ -33,8 +33,9 @@ function onBlazorReadyReg() {
         event.preventDefault();
 
         var formData = {
-            email: $('#email').val(),
-            password: $('#password').val()
+            "email": $('#email').val(),
+            "userName": $('#username').val(),
+            "password": $('#password').val()
         };
 
         var url = '/register';
