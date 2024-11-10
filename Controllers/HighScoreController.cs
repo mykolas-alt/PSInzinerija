@@ -1,16 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-using PSInzinerija1.Data.ApplicationDbContext;
 using PSInzinerija1.Enums;
 using PSInzinerija1.Data.Models;
 using PSInzinerija1.Services;
+using PSInzinerija1.Filters;
 
 namespace PSInzinerija1.Controllers
 {
     [ApiController]
+    [ServiceFilter<APIHitCountFilter>]
     [Route("api/[controller]")]
     public class HighScoresController(HighScoreService highScoreService) : ControllerBase
     {

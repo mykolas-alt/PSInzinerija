@@ -165,7 +165,7 @@ namespace PSInzinerija1.Migrations
 
                     b.HasKey("Id", "GameId");
 
-                    b.ToTable("high_scores");
+                    b.ToTable("high_scores", (string)null);
                 });
 
             modelBuilder.Entity("PSInzinerija1.Data.Models.User", b =>

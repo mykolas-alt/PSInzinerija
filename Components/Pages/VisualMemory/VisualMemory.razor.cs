@@ -9,7 +9,7 @@ using PSInzinerija1.Services;
 
 namespace PSInzinerija1.Components.Pages.VisualMemory
 {
-    public partial class VisualMemory
+    public partial class VisualMemory : ComponentBase
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         [Inject]

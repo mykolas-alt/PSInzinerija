@@ -8,11 +8,15 @@ using PSInzinerija1.Components;
 using PSInzinerija1.Data.ApplicationDbContext;
 using PSInzinerija1.Services;
 using PSInzinerija1.Data.Models;
+using PSInzinerija1.Filters;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 var configuration = builder.Configuration;
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 builder.Services.AddHttpClient();
 
 builder.Services.AddHttpClient<GameRulesAPIService>(options =>
@@ -25,6 +29,8 @@ builder.Services.AddAuthentication()
     .AddCookie(IdentityConstants.ApplicationScheme);
 
 builder.Services.AddTransient<HighScoreService>();
+builder.Services.AddSingleton<APITrackingService>();
+builder.Services.AddScoped<APIHitCountFilter>();
 
 builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddCascadingAuthenticationState();
