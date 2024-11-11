@@ -1,13 +1,16 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
+@using PSInzinerija1.Services
+@using PSInzinerija1.Data.Models
+@using PSInzinerija1.Enums
+@using PSInzinerija1.Data.ApplicationDbContext
 
 <PageTitle>Home</PageTitle>
 
 <h1>Welcome to itssoover Mind Games</h1>
 
 Select one of the available games
-
 
 <AuthorizeView>
     <NotAuthorized>
@@ -37,16 +40,57 @@ Select one of the available games
         <h4>
             You are already logged in!
         </h4>
+        <h2>Your Recent Scores</h2>
+        @if (recentScores != null)
+        {
+            @foreach (var gameScores in recentScores)
+            {
+                <h3>@gameScores.Key</h3>
+                <ul>
+                    @foreach (var score in gameScores.Value)
+                    {
+                        <li>@score.RecordDate: @score.HighScore</li>
+                    }
+                </ul>
+            }
+        }
+        else
+        {
+            <p>Loading...</p>
+        }
     </Authorized>
 </AuthorizeView>
-
 
 @code {
     [Inject]
     protected IJSRuntime JSRuntime { get; set; }
 
-    protected override void OnAfterRender(bool firstRender) {
-        if(firstRender)
+    [Inject]
+    protected HighScoreService HighScoreService { get; set; }
+
+    [Inject]
+    protected AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    [Inject]
+    protected UserManager<User> UserManager { get; set; }
+
+    [Inject]
+    protected ApplicationDbContext Context { get; set; }
+
+    private Dictionary<string, List<HighScoresEntry>>? recentScores;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var highScoreFetcher = new HighScoreFetcher<User, AvailableGames>(Context, UserManager);
+        recentScores = await highScoreFetcher.GetUserRecentScoresAsync(user, 3);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
             JSRuntime.InvokeVoidAsync("onBlazorReadyLog");
     }
 }
