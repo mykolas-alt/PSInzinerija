@@ -13,8 +13,8 @@
     </div>
 
     <div class="buttons">
-        <button class="game-button" @onclick="async() => await Manager.HandleButtonClick(true)">Seen</button>
-        <button class="game-button" @onclick="async() => await Manager.HandleButtonClick(false)">New</button>
+        <button class="game-button" @onclick="async() => await Manager.HandleSeenButtonClick()">Seen</button>
+        <button class="game-button" @onclick="async() => await Manager.HandleNewButtonClick()">New</button>
     </div>
 
     <div class="mistake-counter">

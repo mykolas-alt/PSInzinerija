@@ -26,8 +26,15 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddTransient<HighScoreService>();
 
+builder.Services.AddTransient<WordListService>();
+
 builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddCascadingAuthenticationState();
+
+builder.Services.AddHttpClient<WordListAPIService>(options =>
+{
+    options.BaseAddress = new Uri("http://localhost:5181");  // Set this to your API base address
+}).AddHeaderPropagation();
 
 builder.Services.AddHttpClient<HighScoreAPIService>(options =>
 {

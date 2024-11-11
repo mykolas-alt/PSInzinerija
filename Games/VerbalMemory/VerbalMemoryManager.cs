@@ -2,11 +2,14 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using PSInzinerija1.Games.VerbalMemory;
 using PSInzinerija1.Enums;
+using PSInzinerija1.Exceptions;
+using PSInzinerija1.Services;
 
 namespace PSInzinerija1.Games.VerbalMemory
 {
     public class VerbalMemoryManager : IGameManager
     {
+        private readonly WordListAPIService _wordListAPIService;
         public int MistakeCount { get; private set; } = 0;
         public List<string> WordList { get; private set; } = new List<string>();
         public List<string> WordsShown { get; private set; } = new List<string>();
@@ -31,9 +34,23 @@ namespace PSInzinerija1.Games.VerbalMemory
                 return json.ToString();
             }
         }
+        public VerbalMemoryManager(WordListAPIService wordListAPIService)
+        {
+            _wordListAPIService = wordListAPIService;
+        }
         public async Task StartNewGame()
         {
-            WordList = await WordListLoader.GetUniqueWordsFromFile("wwwroot/GameRules/SimonSaysRules.txt");
+            try
+            {
+                WordList = await _wordListAPIService.GetWordsFromFileAsync("wwwroot/GameRules/SimonSaysRules.txt");
+            }
+            catch (WordListLoadException ex)
+            {
+                Console.WriteLine(ex.Message);
+                GameOver = true;
+                return;
+            }
+
             MistakeCount = 0;
             Score = 0;
             WordsShown.Clear();
@@ -41,7 +58,7 @@ namespace PSInzinerija1.Games.VerbalMemory
             ShowRandomWord();
         }
 
-        public async Task HandleButtonClick(bool pressedSeen)
+        public async Task HandleNewButtonClick()
         {
             if (GameOver)
             {
@@ -50,19 +67,42 @@ namespace PSInzinerija1.Games.VerbalMemory
 
             if (WordsShown.Contains(CurrentWord))
             {
-                if (!pressedSeen)
-                {
-                    MistakeCount++;
-                }
-            }
-            else
-            {
-                if (pressedSeen)
-                {
-                    MistakeCount++;
-                }
+                MistakeCount++;
             }
 
+            await CheckGameOver();
+            if (!GameOver)
+            {
+                Score++;
+                WordsShown.Add(CurrentWord);
+                ShowRandomWord();
+            }
+        }
+
+        public async Task HandleSeenButtonClick()
+        {
+            if (GameOver)
+            {
+                return;
+            }
+
+            if (!WordsShown.Contains(CurrentWord))
+            {
+                MistakeCount++;
+            }
+
+            await CheckGameOver();
+
+            if (!GameOver)
+            {
+                Score++;
+                WordsShown.Add(CurrentWord);
+                ShowRandomWord();
+            }
+        }
+
+        private async Task CheckGameOver()
+        {
             if (MistakeCount >= 3)
             {
                 if (Score > HighScore)
@@ -70,52 +110,43 @@ namespace PSInzinerija1.Games.VerbalMemory
                     HighScore = Score;
                     OnStatisticsChanged?.Invoke();
                 }
+
                 GameOver = true;
                 WordList.Clear();
                 await StartNewGame();
-                return;
             }
-
-            Score++;
-            WordsShown.Add(CurrentWord);
-            ShowRandomWord();
         }
+
 
         private void ShowRandomWord()
         {
             if (WordList.Count > 0)
             {
                 Random random = new Random();
-                bool showSeenWord = random.Next(1, 11) < 3; // 20% chance to show a seen word
-                string newWord = CurrentWord;
+                string newWord;
+                bool showSeenWord = random.Next(1, 11) < 3; // 20% chance to show a seen word, because the list is large
 
-                while (true)
+                if (showSeenWord && WordsShown.Count > 2)
                 {
-                    try
+                    do
                     {
-                        if (showSeenWord && WordsShown.Count > 2)
-                        {
-                            newWord = WordsShown[random.Next(WordsShown.Count)];
-                        }
-                        else
-                        {
-                            newWord = WordList[random.Next(WordList.Count)];
-                        }
-
-                        if (newWord == CurrentWord)
-                        {
-                            throw new DuplicateWordException("Selected word is the same as the previous word. Retrying...");
-                        }
-                        CurrentWord = newWord;
-                        break;
+                        newWord = WordsShown[random.Next(WordsShown.Count)];
                     }
-                    catch (DuplicateWordException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
+                    while (newWord == CurrentWord); // Avoiding the same word 2 times in a row
                 }
+                else
+                {
+                    do
+                    {
+                        newWord = WordList[random.Next(WordList.Count)];
+                    }
+                    while (newWord == CurrentWord && WordList.Count > 1); // Same as above
+                }
+
+                CurrentWord = newWord;
             }
         }
+
 
 
         public void LoadStatisticsFromJSON(string? json)
