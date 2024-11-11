@@ -24,6 +24,13 @@ namespace PSInzinerija1.Games.SimonSays
 
         public AvailableGames GameID => AvailableGames.SimonSays;
 
+        public async Task FlashButton<T>(T button, Action? colorChanged, int duration = 400, int delayBeforeFlash = 0, bool disableButton = false)
+        {
+            if (button is Button)
+            {
+                await ((Button)(object)button).FlashButton(colorChanged, duration, delayBeforeFlash, disableButton);
+            }
+        }
         public string SerializedStatistics
         {
             get
@@ -69,7 +76,7 @@ namespace PSInzinerija1.Games.SimonSays
                 var button = Buttons[index - 1];
                 int levelBasedDelay = Math.Max(200 - (Level * 10), 50);
                 int levelBasedFlash = Math.Max(400 - (Level * 20), 100);
-                await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration: levelBasedFlash);
+                await FlashButton(button, OnStateChanged, delayBeforeFlash: levelBasedDelay, duration: levelBasedFlash);
             }
             IsShowingSequence = false;
         }

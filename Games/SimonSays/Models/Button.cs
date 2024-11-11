@@ -1,7 +1,7 @@
 
 namespace PSInzinerija1.Games.SimonSays.Models
 {
-    public class Button
+    public class Button : IFlashingButton
     {
         public string Text { get; set; }
         public int Index { get; set; }
