@@ -1,0 +1,30 @@
+@page "/SimonSays"
+
+@using PSInzinerija1.Games.SimonSays
+
+<PageTitle>@gameInfo?.GameName ?? SimonSays</PageTitle>
+
+    
+
+    <h2>High Score: @gameManager.HighScore</h2>
+    <h2>Current Score: @gameManager.Level</h2>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: 48vh; margin: 0 auto; height: 48vh; position: relative;">
+    @foreach (var button in gameManager.Buttons)
+    {
+        var buttonClass = button.IsLit ? "buttonDefault pressed valid" : "buttonDefault";
+        <button class="@buttonClass" @onclick="async () => await button.OnClick(StateHasChanged)">@button.Text</button>
+    }
+</div>
+    <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 3em;">
+        <button   class="buttonDefault start" disabled = "@gameManager.IsDisabled" @onclick="@(async () => {@gameManager.IsDisabled=true; await gameManager.StartNewGame();})">New Game</button>
+        
+    </div>
+
+@if(@gameInfo != null)
+{
+    <h2>@gameInfo.Value.GameName Žaidimo taisyklės</h2>
+    <p>@gameInfo.Value.Rules</p>
+    <h2>Žaidimo išleidimo data: @gameInfo.Value.ReleaseDate </h2>
+}
+
