@@ -26,7 +26,7 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddTransient<HighScoreService>();
 
-builder.Services.AddTransient<WordListService>();
+builder.Services.AddScoped<WordListService>();
 
 builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddCascadingAuthenticationState();
