@@ -9,7 +9,6 @@ namespace PSInzinerija1.Games.VerbalMemory
 {
     public class VerbalMemoryManager : IGameManager
     {
-        private readonly WordListAPIService _wordListAPIService;
         public int MistakeCount { get; private set; } = 0;
         public List<string> WordList { get; private set; } = new List<string>();
         public List<string> WordsShown { get; private set; } = new List<string>();
@@ -34,28 +33,15 @@ namespace PSInzinerija1.Games.VerbalMemory
                 return json.ToString();
             }
         }
-        public VerbalMemoryManager(WordListAPIService wordListAPIService)
+        public async Task StartNewGame(List<string> words)
         {
-            _wordListAPIService = wordListAPIService;
-        }
-        public async Task StartNewGame()
-        {
-            try
-            {
-                WordList = await _wordListAPIService.GetWordsFromFileAsync("wwwroot/GameRules/SimonSaysRules.txt");
-            }
-            catch (WordListLoadException ex)
-            {
-                Console.WriteLine(ex.Message);
-                GameOver = true;
-                return;
-            }
-
+            WordList = words;
             MistakeCount = 0;
             Score = 0;
             WordsShown.Clear();
             GameOver = false;
             ShowRandomWord();
+            await Task.CompletedTask;
         }
 
         public async Task HandleNewButtonClick()
@@ -112,8 +98,7 @@ namespace PSInzinerija1.Games.VerbalMemory
                 }
 
                 GameOver = true;
-                WordList.Clear();
-                await StartNewGame();
+                await StartNewGame(WordList);
             }
         }
 

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 using PSInzinerija1.Enums;
+using PSInzinerija1.Exceptions;
 using PSInzinerija1.Extensions;
 using PSInzinerija1.Games;
 using PSInzinerija1.Games.VerbalMemory;
@@ -17,19 +18,35 @@ namespace PSInzinerija1.Components.Pages.VerbalMemory
         [Inject]
         ProtectedSessionStorage SessionStorage { get; set; }
         [Inject]
-        private WordListAPIService WordListAPIService { get; set; } 
-        VerbalMemoryManager Manager { get; set; }
+        WordListAPIService WordListAPIService { get; set; }
+
+        VerbalMemoryManager Manager { get; set; } = new VerbalMemoryManager();
+        
+        bool LoadFailed { get; set; } = false;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         protected override async Task OnInitializedAsync()
         {
-            Manager = new VerbalMemoryManager(WordListAPIService);
-            Manager.OnStatisticsChanged += async () =>
+            List<string>? wordList = null;
+            try
             {
-                await SaveToDB(Manager);
-                await SessionStorage.SaveStateSessionStorage(Manager);
-            };
-            await Manager.StartNewGame();
+                wordList = await WordListAPIService.GetWordsFromApiAsync("SimonSaysRules.txt");
+            }
+            catch (WordListLoadException ex)
+            {
+                Console.WriteLine($"Error loading word list: {ex.Message}");
+                LoadFailed = true;
+            }
+
+            if (wordList != null && wordList.Any())
+            {
+                Manager.OnStatisticsChanged += async () =>
+                {
+                    await SaveToDB(Manager);
+                    await SessionStorage.SaveStateSessionStorage(Manager);
+                };
+                await Manager.StartNewGame(wordList);
+            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -4,7 +4,6 @@ using PSInzinerija1.Services;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PSInzinerija1.Exceptions;
 
 namespace PSInzinerija1.Controllers
 {
@@ -19,33 +18,23 @@ namespace PSInzinerija1.Controllers
             _wordListService = wordListService;
         }
 
-        /// <summary>
-        /// Fetches unique words from a local file.
-        /// </summary>
-        /// <param name="filePath">Path to the file containing words</param>
-        /// <returns>List of unique words</returns>
         [HttpGet("words")]
-        public async Task<ActionResult<IEnumerable<string>>> GetWordsFromFileAsync([FromQuery] string filePath)
+        public async Task<ActionResult<IEnumerable<string>>> GetWordsFromFileAsync([FromQuery] string fileName)
         {
-            try
+            if (!fileName.EndsWith(".txt"))
             {
-                var words = await _wordListService.GetWordsFromFileAsync(filePath);
+                return BadRequest();
+            }
 
-                if (words.Count == 0)
-                {
-                    return NotFound("File is empty or not found.");
-                }
+            var filePath = Path.Combine("GameRules/", fileName);
+            var words = await _wordListService.GetWordsFromFileAsync(filePath);
 
-                return Ok(words);
-            }
-            catch (WordListLoadException ex)
+            if (words == null || words.Count == 0)
             {
-                return BadRequest($"Error loading words from file: {ex.Message}");
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
-            }
+
+            return Ok(words);
         }
     }
 }
