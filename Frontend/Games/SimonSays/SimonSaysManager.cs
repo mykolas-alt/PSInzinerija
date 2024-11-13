@@ -8,6 +8,7 @@ namespace PSInzinerija1.Games.SimonSays
 {
     public class SimonSaysManager : IGameManager
     {
+        public record SimonSaysStats(int HighScore, int[] RecentScores, int[] GameMistakes, int[] FastestTimes);
         public List<int> Sequence { get; private set; } = new List<int>();
         public int Level { get; private set; } = 0;
         public int HighScore { get; private set; } = 0;
@@ -24,14 +25,14 @@ namespace PSInzinerija1.Games.SimonSays
 
         public AvailableGames GameID => AvailableGames.SimonSays;
 
+        public int[] RecentScores = new int[3];
+        public int[] FastestTimes { get; private set; } = new int[3];
+
         public string SerializedStatistics
         {
             get
             {
-                var obj = new
-                {
-                    HighScore
-                };
+                var obj = new SimonSaysStats(HighScore, RecentScores, FastestTimes);
                 var json = JsonSerializer.Serialize(obj);
 
                 return json.ToString();
@@ -116,13 +117,29 @@ namespace PSInzinerija1.Games.SimonSays
                 return;
             }
 
-            var jsonObject = JsonNode.Parse(json)?.AsObject();
-
-            if (jsonObject != null && jsonObject[nameof(HighScore)] != null)
+            SimonSaysStats? stats = JsonSerializer.Deserialize<SimonSaysStats>(json);
+            if(stats != null)
             {
-                HighScore = jsonObject[nameof(HighScore)].Deserialize<int>();
-            }
+                if (stats?.HighScore != null && stats?.HighScore > HighScore)
+                {
+                    HighScore = stats.HighScore;
+                }
+                
+                if(stats?.RecentScores != null)
+                {
+                    RecentScores = stats.RecentScores;
+                }
 
+                if(stats?.GameMistakes != null)
+                {
+                    GameMistakes = stats.GameMistakes;
+                }
+
+                if(stats?.FastestTimes != null)
+                {
+                    FastestTimes = stats.FastestTimes;
+                }
+            }
         }
 
         public bool SetHighScore(int? highScore)
@@ -134,6 +151,17 @@ namespace PSInzinerija1.Games.SimonSays
 
             HighScore = highScore.Value;
             return true;
+        }
+
+        private void UpdateRecentScores(int latestScore)
+        {
+            // Shift the scores to the left
+            for (int i = 0; i < RecentScores.Length - 1; i++)
+            {
+                RecentScores[i+1] = RecentScores[i];
+            }
+            // Add the latest score to the end
+            RecentScores[0] = latestScore;
         }
     }
 }
