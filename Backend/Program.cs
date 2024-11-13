@@ -8,6 +8,11 @@ using PSInzinerija1.Data.ApplicationDbContext;
 using PSInzinerija1.Services;
 using PSInzinerija1.Data.Models;
 using PSInzinerija1.Filters;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
+using PSInzinerija1.Shared.Data.Models;
+using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -126,5 +131,16 @@ app.MapPost("/logout", async (SignInManager<User> signInManager) =>
     return Results.Redirect("/");
 })
 .RequireAuthorization();
+
+// temp
+app.MapGet("/user/info", async Task<Results<Ok<UserInfo>, ValidationProblem, NotFound>>
+    (ClaimsPrincipal claimsPrincipal, [FromServices] IServiceProvider sp) =>
+{
+    var userManager = sp.GetRequiredService<UserManager<User>>();
+    return await userManager.GetUserAsync(claimsPrincipal) is not { } user
+        ? (Results<Ok<UserInfo>, ValidationProblem, NotFound>)TypedResults.NotFound()
+        : TypedResults.Ok(new UserInfo(user.Email, user.UserName));
+});
+
 
 app.Run();
