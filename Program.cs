@@ -33,7 +33,7 @@ builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddHttpClient<WordListAPIService>(options =>
 {
-    options.BaseAddress = new Uri("http://localhost:5181");  // Set this to your API base address
+    options.BaseAddress = new Uri("http://localhost:5181");
 }).AddHeaderPropagation();
 
 builder.Services.AddHttpClient<HighScoreAPIService>(options =>
