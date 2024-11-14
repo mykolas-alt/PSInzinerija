@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 
 namespace Frontend.Services
 {
-    public class HighScoreAPIService(IHttpClientFactory httpClientFactory)
+    public class HighScoreAPIService(IHttpClientFactory httpClientFactory, ILogger<HighScoreAPIService> logger)
     {
         private readonly HttpClient _httpClient = httpClientFactory.CreateClient("BackendApi");
 
@@ -20,9 +20,9 @@ namespace Frontend.Services
                 var leaderboard = await _httpClient.GetFromJsonAsync<List<LeaderboardEntry>>(url);
                 return leaderboard ?? [];  // Return empty list if null
             }
-            catch (HttpRequestException ex)
+            catch (Exception e)
             {
-                Console.WriteLine($"Request error: {ex.Message}");
+                logger.LogError($"Request error: {e.Message}");
                 return [];  // Return empty list in case of error
             }
 
@@ -31,15 +31,23 @@ namespace Frontend.Services
         public async Task<int?> GetHighScoreAsync(AvailableGames game)
         {
             string requestUri = $"/api/highscores/{game}";
-            var res = await _httpClient.GetAsync(requestUri);
-
-            if (res.IsSuccessStatusCode)
+            try
             {
-                var json = await res.Content.ReadAsStringAsync();
+                var result = await _httpClient.GetAsync(requestUri);
 
-                JsonNode? node = JsonNode.Parse(json);
+                if (result.IsSuccessStatusCode)
+                {
+                    var json = await result.Content.ReadAsStringAsync();
 
-                return node?["highScore"]?.GetValue<int>();
+                    JsonNode? node = JsonNode.Parse(json);
+
+                    return node?["highScore"]?.GetValue<int>();
+                }
+
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Request error: {e.Message}");
             }
 
             return null;
@@ -47,19 +55,34 @@ namespace Frontend.Services
 
         public async Task<bool> DeleteFromDbAsync(AvailableGames game)
         {
-            var res = await _httpClient.DeleteAsync($"/api/highscores/{game}");
+            try
+            {
+                var res = await _httpClient.DeleteAsync($"/api/highscores/{game}");
+                return res.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Request error: {e.Message}");
+            }
 
-            return res.IsSuccessStatusCode;
+            return false;
         }
 
         public async Task<bool> SaveHighScoreToDbAsync(AvailableGames game, int newHighScore)
         {
-            var content = new StringContent(newHighScore.ToString(), Encoding.UTF8, "application/json");
-            var res = await _httpClient.PutAsync($"/api/highscores/{game}", content);
+            try
+            {
+                var content = new StringContent(newHighScore.ToString(), Encoding.UTF8, "application/json");
+                var res = await _httpClient.PutAsync($"/api/highscores/{game}", content);
 
-            Console.WriteLine(_httpClient.DefaultRequestHeaders);
+                return res.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Request error: {e.Message}");
+            }
 
-            return res.IsSuccessStatusCode;
+            return false;
         }
     }
 }
