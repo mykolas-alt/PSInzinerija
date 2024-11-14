@@ -1,0 +1,60 @@
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" class="form-control" @bind-Value="loginModel.Password" type="password" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+
+    private async Task HandleLogin()
+    {
+        var url = "login?useCookies=true&useSessionCookies=true"; // Backend login URL
+        var client = HttpClientFactory.CreateClient("BackendApi");
+        var formData = new
+        {
+            email = loginModel.Email,
+            password = loginModel.Password
+        };
+
+        try
+        {
+            var response = await client.PostAsJsonAsync(url, formData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Success!");
+                NavigationManager.Refresh(true);
+            }
+            else
+            {
+                // Handle login failure (you can display an error message, for example)
+                Console.WriteLine("Login failed: " + response.ReasonPhrase);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
+    }
+
+    public class LoginModel
+    {
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+}
