@@ -124,7 +124,7 @@ app.MapControllers();
 app.MapPost("/logout", async (SignInManager<User> signInManager) =>
 {
     await signInManager.SignOutAsync();
-    return Results.Redirect("/");
+    return TypedResults.Ok();
 })
 .RequireAuthorization();
 
