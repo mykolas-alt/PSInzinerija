@@ -8,6 +8,10 @@ using PSInzinerija1.Data.ApplicationDbContext;
 using PSInzinerija1.Services;
 using PSInzinerija1.Data.Models;
 using PSInzinerija1.Filters;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
+using PSInzinerija1.Shared.Data.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +27,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins("http://localhost:5142")
+            .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -82,10 +87,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     // Cookie settings
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
-    options.LoginPath = "/Identity/Account/Login";
-    options.LogoutPath = "/Identity/Account/Logout";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
 
@@ -123,8 +124,19 @@ app.MapControllers();
 app.MapPost("/logout", async (SignInManager<User> signInManager) =>
 {
     await signInManager.SignOutAsync();
-    return Results.Redirect("/");
+    return TypedResults.Ok();
 })
 .RequireAuthorization();
+
+// temp
+app.MapGet("/user/info", async Task<Results<Ok<UserInfo>, ValidationProblem, NotFound>>
+    (ClaimsPrincipal claimsPrincipal, [FromServices] IServiceProvider sp) =>
+{
+    var userManager = sp.GetRequiredService<UserManager<User>>();
+    return await userManager.GetUserAsync(claimsPrincipal) is not { } user
+        ? (Results<Ok<UserInfo>, ValidationProblem, NotFound>)TypedResults.NotFound()
+        : TypedResults.Ok(new UserInfo(user.Email, user.UserName));
+});
+
 
 app.Run();

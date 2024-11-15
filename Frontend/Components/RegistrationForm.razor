@@ -1,0 +1,67 @@
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@registrationModel" OnValidSubmit="HandleRegistration">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="userName">Username</label>
+        <InputText id="userName" class="form-control" @bind-Value="registrationModel.UserName" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="registrationModel.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" class="form-control" @bind-Value="registrationModel.Password" type="password" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@code {
+    private RegistrationModel registrationModel = new();
+
+    private async Task HandleRegistration()
+    {
+        var url = "register"; // Backend register URL
+        var client = HttpClientFactory.CreateClient("BackendApi");
+        var formData = new
+        {
+            userName = registrationModel.UserName,
+            email = registrationModel.Email,
+            password = registrationModel.Password
+        };
+
+        try
+        {
+            var response = await client.PostAsJsonAsync(url, formData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Success!");
+                NavigationManager.NavigateTo("/", true);
+            }
+            else
+            {
+                // Handle registration failure (you can display an error message, for example)
+                Console.WriteLine("Registration failed: " + response.ReasonPhrase);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
+    }
+
+    public class RegistrationModel
+    {
+        public string UserName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+}

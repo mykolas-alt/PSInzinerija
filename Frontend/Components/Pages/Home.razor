@@ -1,0 +1,27 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+
+<PageTitle>Home</PageTitle>
+
+<h1>Welcome to itssoover Mind Games</h1>
+
+Select one of the available games
+
+
+<AuthorizeView>
+    <NotAuthorized>
+        <LoginForm />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    [Inject]
+    protected IJSRuntime JSRuntime { get; set; }
+
+    protected override void OnAfterRender(bool firstRender) {
+        if(firstRender)
+            JSRuntime.InvokeVoidAsync("onBlazorReadyLog");
+    }
+}    

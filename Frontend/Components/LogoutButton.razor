@@ -1,0 +1,29 @@
+<button @onclick="Logout" class="nav-link btn btn-link text-dark">Logout</button>
+
+@code {
+    [Inject]
+    IHttpClientFactory ClientFactory { get; set; }
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private async Task Logout()
+    {
+        var client = ClientFactory.CreateClient("BackendApi");
+        try
+        {
+            var response = await client.PostAsync("/logout", null);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/", true);
+            }
+            else
+            {
+                Console.WriteLine("Logout failed.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during logout: {ex.Message}");
+        }
+    }
+}

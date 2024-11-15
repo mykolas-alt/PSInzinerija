@@ -1,16 +1,17 @@
 using Frontend.Components;
 using Frontend.Services;
 
-using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddHttpClient<HighScoreAPIService>(options =>
+builder.Services.AddHttpClient("BackendApi", options =>
 {
     options.BaseAddress = new Uri("http://localhost:5211");
+    options.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
 }).AddHeaderPropagation();
 
 builder.Services.AddHeaderPropagation(options =>
@@ -18,8 +19,9 @@ builder.Services.AddHeaderPropagation(options =>
     options.Headers.Add("Cookie");
 });
 
+builder.Services.AddScoped<HighScoreAPIService>();
+builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
-builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddCascadingAuthenticationState();
 
 // Add services to the container.
