@@ -20,9 +20,10 @@ namespace PSInzinerija1.Data.Models
         public int[] RecentScores { get; set; } = new int[3];
         [Column("game_id")]
         public AvailableGames GameId { get; set; }
-        [Column("fastest_times")
+        [Column("fastest_times")]
         public int[] FastestTimes { get; set; } = new int[3];
         [Column("record_date")]
         public DateTime RecordDate { get; set; }
+
     }
 }

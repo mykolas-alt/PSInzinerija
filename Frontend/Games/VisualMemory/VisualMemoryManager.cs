@@ -11,7 +11,7 @@ namespace PSInzinerija1.Games.VisualMemory
     {
         public record VisualMemoryStats(int HighScore, int[] RecentScores, int[] GameMistakes);
         public int Score { get; private set; } = 0;
-        public int[]  GameMistakes { get; private set; } = new int[3];
+        public int[] GameMistakes { get; private set; } = new int[3];
         public int[] RecentScores {get; set;} = new int[3];
         public int HighScore { get; private set; } = 0;
         public Pattern Pattern { get; private set; } = new();

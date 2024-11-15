@@ -1,14 +1,16 @@
+using System;
+using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
+using PSInzinerija1.Data.Models;
 using PSInzinerija1.Enums;
 using PSInzinerija1.Games.SimonSays.Models;
+
 
 namespace PSInzinerija1.Games.SimonSays
 {
     public class SimonSaysManager : IGameManager
     {
-        public record SimonSaysStats(int HighScore, int[] RecentScores, int[] GameMistakes, int[] FastestTimes);
         public List<int> Sequence { get; private set; } = new List<int>();
         public int Level { get; private set; } = 0;
         public int HighScore { get; private set; } = 0;
@@ -26,14 +28,21 @@ namespace PSInzinerija1.Games.SimonSays
         public AvailableGames GameID => AvailableGames.SimonSays;
 
         public int[] RecentScores = new int[3];
-        public int[] FastestTimes { get; private set; } = new int[3];
+        public int[] GameMistakes = new int[3];
+        public int[] FastestTimes = new int[3];
 
         public string SerializedStatistics
         {
             get
             {
-                var obj = new SimonSaysStats(HighScore, RecentScores, FastestTimes);
-                var json = JsonSerializer.Serialize(obj);
+                var specificStats = new SimonSaysStats { FastestTimes = FastestTimes };
+                var gameStats = new GameStats<SimonSaysStats>(specificStats)
+                {
+                    HighScore = HighScore,
+                    RecentScores = RecentScores
+                };
+
+                var json = JsonSerializer.Serialize(gameStats);
 
                 return json.ToString();
             }
@@ -84,9 +93,9 @@ namespace PSInzinerija1.Games.SimonSays
 
             if (!IsInputCorrect())
             {
-                if (Level > HighScore)
+                if (Level > SimonSaysStats)
                 {
-                    HighScore = Level;
+                    SimonSaysStats = Level;
                     OnStatisticsChanged?.Invoke();
                 }
                 GameOver = true;
@@ -117,50 +126,32 @@ namespace PSInzinerija1.Games.SimonSays
                 return;
             }
 
-            SimonSaysStats? stats = JsonSerializer.Deserialize<SimonSaysStats>(json);
-            if(stats != null)
+            var jsonObject = JsonNode.Parse(json)?.AsObject();
+
+            if (jsonObject != null && jsonObject[nameof(SimonSaysStats)] != null)
             {
-                if (stats?.HighScore != null && stats?.HighScore > HighScore)
-                {
-                    HighScore = stats.HighScore;
-                }
-                
-                if(stats?.RecentScores != null)
-                {
-                    RecentScores = stats.RecentScores;
-                }
-
-                if(stats?.GameMistakes != null)
-                {
-                    GameMistakes = stats.GameMistakes;
-                }
-
-                if(stats?.FastestTimes != null)
-                {
-                    FastestTimes = stats.FastestTimes;
-                }
+                SimonSaysStats = jsonObject[nameof(SimonSaysStats)].Deserialize<int>();
             }
+
         }
 
-        public bool SetHighScore(int? highScore)
+        public bool SetHighScore(int? SimonSaysStats)
         {
-            if (highScore == null || highScore.Value < HighScore)
+            if (SimonSaysStats == null || SimonSaysStats.Value < SimonSaysStats)
             {
                 return false;
             }
 
-            HighScore = highScore.Value;
+            SimonSaysStats = SimonSaysStats.Value;
             return true;
         }
 
         private void UpdateRecentScores(int latestScore)
         {
-            // Shift the scores to the left
             for (int i = 0; i < RecentScores.Length - 1; i++)
             {
                 RecentScores[i+1] = RecentScores[i];
             }
-            // Add the latest score to the end
             RecentScores[0] = latestScore;
         }
     }
