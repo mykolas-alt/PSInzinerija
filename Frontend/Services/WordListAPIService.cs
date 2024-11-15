@@ -7,9 +7,9 @@ namespace Frontend.Services
     {
         private readonly HttpClient _httpClient;
 
-        public WordListAPIService(HttpClient httpClient)
+        public WordListAPIService(IHttpClientFactory clientFactory)
         {
-            _httpClient = httpClient;
+            _httpClient = clientFactory.CreateClient("BackendApi");
         }
 
         public async Task<List<string>?> GetWordsFromApiAsync(string fileName)
