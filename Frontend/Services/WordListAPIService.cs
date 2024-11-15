@@ -14,7 +14,16 @@ namespace Frontend.Services
 
         public async Task<List<string>?> GetWordsFromApiAsync(string fileName)
         {
-            var response = await _httpClient.GetAsync($"api/wordlist/words?fileName={fileName}");
+
+            HttpResponseMessage? response;
+            try
+            {
+                response = await _httpClient.GetAsync($"api/wordlist/words?fileName={fileName}");
+            }
+            catch (Exception)
+            {
+                throw new WordListLoadException("Failed to fetch words from the file.");
+            }
 
             if (!response.IsSuccessStatusCode)
             {
