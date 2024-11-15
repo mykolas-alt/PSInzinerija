@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace PSInzinerija1.Data.Models
+namespace PSInzinerija1.Shared.Data.Models
 {
     public class GameStats<T> where T : class, new()
     {

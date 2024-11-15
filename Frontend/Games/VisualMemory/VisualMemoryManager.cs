@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 
 using PSInzinerija1.Enums;
 using PSInzinerija1.Games.VisualMemory.Models;
+using PSInzinerija1.Shared.Data.Models;
 
 namespace PSInzinerija1.Games.VisualMemory
 {
