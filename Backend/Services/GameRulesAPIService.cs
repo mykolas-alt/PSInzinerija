@@ -17,7 +17,7 @@ namespace PSInzinerija1.Services
                 ReleaseDate = new DateTime(2024, 9, 27)
             };
 
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/GameRules/SimonSaysRules.txt");
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "GameRules/SimonSaysRules.txt");
 
             if (!System.IO.File.Exists(filePath))
             {

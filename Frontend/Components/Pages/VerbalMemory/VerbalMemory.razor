@@ -1,0 +1,32 @@
+@page "/VerbalMemory"
+
+@using PSInzinerija1.Games.VerbalMemory
+
+<PageTitle>VerbalMemory</PageTitle>
+
+<h2>High Score: @Manager.HighScore</h2>
+<h2>Current Score: @Manager.Score</h2>
+
+@if (LoadFailed)
+{
+    <div class="error-message">
+        <h3>Error: Failed to load the word list.</h3>
+    </div>
+}
+else
+{
+    <div class="game-container">
+        <div class="word-display">
+            @Manager.CurrentWord
+        </div>
+
+        <div class="buttons">
+            <button class="game-button" @onclick="async() => await Manager.HandleSeenButtonClick()">Seen</button>
+            <button class="game-button" @onclick="async() => await Manager.HandleNewButtonClick()">New</button>
+        </div>
+
+        <div class="mistake-counter">
+            <p>Mistakes: @Manager.MistakeCount</p>
+        </div>
+    </div>
+}
