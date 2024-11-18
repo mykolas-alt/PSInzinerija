@@ -113,6 +113,16 @@ namespace PSInzinerija1.Games.SimonSays
                     HighScore = Level;
                     OnStatisticsChanged?.Invoke();
                 }
+                
+                var updatedStats = new SimonSaysStats
+                {
+                    HighScore = HighScore,
+                    RecentScores = RecentScores,
+                    FastestTimes = FastestTimes
+                };
+
+                await SaveStatsAsync(updatedStats);
+
                 GameOver = true;
                 Level = 0;
                 IsDisabled = false;
@@ -169,5 +179,12 @@ namespace PSInzinerija1.Games.SimonSays
             }
             RecentScores[0] = latestScore;
         }
+
+        // private async Task SaveStatsAsync(SimonSaysStats stats)
+        // {
+        //     // Replace "user123" with logic to get the current user's ID
+        //     var userId = "user123"; // Replace with actual user retrieval
+        //     await GameStatsService.SaveStatsAsync(userId, AvailableGames.SimonSays, stats);
+        // }
     }
 }

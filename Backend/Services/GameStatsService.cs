@@ -17,16 +17,17 @@ namespace PSInzinerija1.Services
             _context = context;
         }
 
+        // Fetch Stats for a Specific User and Game
         public async Task<T> GetStatsAsync(string userId, AvailableGames gameId)
         {
             var highScoresEntry = await _context.HighScores
                 .Where(e => e.Id == userId && e.GameId == gameId)
-                .OrderByDescending(e => e.RecordDate)
+                .OrderByDescending(e => e.RecordDate) // Ensure the most recent entry
                 .FirstOrDefaultAsync();
 
             if (highScoresEntry == null)
             {
-                return new T();
+                return new T(); // Return a default instance if no data exists
             }
 
             var stats = new T
@@ -35,6 +36,7 @@ namespace PSInzinerija1.Services
                 RecentScores = highScoresEntry.RecentScores
             };
 
+            // Populate game-specific fields
             if (stats is VisualMemoryStats visualMemoryStats)
             {
                 visualMemoryStats.GameMistakes = highScoresEntry.Mistakes;
@@ -45,6 +47,41 @@ namespace PSInzinerija1.Services
             }
 
             return stats;
+        }
+
+        // Save Stats for a Specific User and Game
+        public async Task SaveStatsAsync(string userId, AvailableGames gameId, T stats)
+        {
+            var highScoresEntry = await _context.HighScores
+                .FirstOrDefaultAsync(e => e.Id == userId && e.GameId == gameId);
+
+            if (highScoresEntry == null)
+            {
+                // Create a new database entry if one doesn't exist
+                highScoresEntry = new HighScoresEntry
+                {
+                    Id = userId,
+                    GameId = gameId,
+                    RecordDate = DateTime.UtcNow
+                };
+                _context.HighScores.Add(highScoresEntry);
+            }
+
+            // Update common stats
+            highScoresEntry.HighScore = stats.HighScore;
+            highScoresEntry.RecentScores = stats.RecentScores;
+
+            // Update game-specific stats
+            if (stats is VisualMemoryStats visualMemoryStats)
+            {
+                highScoresEntry.Mistakes = visualMemoryStats.GameMistakes;
+            }
+            else if (stats is SimonSaysStats simonSaysStats)
+            {
+                highScoresEntry.FastestTimes = simonSaysStats.FastestTimes;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

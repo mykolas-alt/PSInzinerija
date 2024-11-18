@@ -1,26 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-using PSInzinerija1.Services;
-using PSInzinerija1.Shared.Data.Models;
-
-
-namespace PSInzinerija1.Controllers
+﻿[ApiController]
+[Route("api/gamestats")]
+public class GameStatsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class GameStatsController : ControllerBase
-    {
-        private readonly GameStatsService _gameStatsService;
-        public GameStatsController(GameStatsService gameStatsService)
-        {
-            _gameStatsService = gameStatsService;
-        }
-        [HttpGet("{game}")]
-        public async Task<ActionResult<Stats>> GetStatsAsync(AvailableGames game)
-        {
-            var stats = await gameStatsService.GetStatsAsync(HttpContext.User, game);
+    private readonly ApplicationDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-            return stats == null ? NotFound() : Ok(stats);
+    public GameStatsController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+    {
+        _context = context;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    [HttpGet("recentscores")]
+    public async Task<IActionResult> GetRecentScores()
+    {
+        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var highScoreEntry = await _context.HighScores.FirstOrDefaultAsync(h => h.Id == userId);
+        if (highScoreEntry == null) return NotFound();
+
+        return Ok(highScoreEntry.RecentScores);
+    }
+
+    [HttpPost("recentscores")]
+    public async Task<IActionResult> SaveRecentScores([FromBody] int[] recentScores)
+    {
+        if (recentScores.Length != 3) return BadRequest("Exactly 3 scores are required.");
+
+        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var highScoreEntry = await _context.HighScores.FirstOrDefaultAsync(h => h.Id == userId);
+        if (highScoreEntry == null)
+        {
+            highScoreEntry = new HighScoresEntry { Id = userId, RecentScores = recentScores };
+            _context.HighScores.Add(highScoreEntry);
         }
+        else
+        {
+            highScoreEntry.RecentScores = recentScores;
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 }

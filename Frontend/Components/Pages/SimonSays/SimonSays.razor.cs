@@ -19,6 +19,8 @@ namespace Frontend.Components.Pages.SimonSays
         HighScoreAPIService HighScoreAPIService { get; set; }
         [Inject]
         ProtectedSessionStorage SessionStorage { get; set; }
+        [Inject]
+        GameStatsService<SimonSaysStats> GameStatsService
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         private readonly SimonSaysManager gameManager = new();
@@ -26,6 +28,8 @@ namespace Frontend.Components.Pages.SimonSays
         // public GameRulesAPIService GameRulesService { get; set; } = null!;
 
         GameInfo? gameInfo = null;
+        private SimonSaysStats? stats;
+        private bool isLoading = true;
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,6 +42,9 @@ namespace Frontend.Components.Pages.SimonSays
             };
 
             // gameInfo = await GameRulesService.GetGameRulesAsync();
+            // {var userId = "user123"; // You'll need to replace this with a real user ID retrieval method
+            // stats = await GameStatsService.GetStatsAsync(userId, AvailableGames.SimonSays);
+            // isLoading = false;} //pakeist i actual user id
 #pragma warning restore CS8600
             //await gameManager.StartNewGame();
         }
