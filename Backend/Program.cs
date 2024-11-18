@@ -1,18 +1,16 @@
 using System.Reflection;
 
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using PSInzinerija1.Data.ApplicationDbContext;
-using PSInzinerija1.Services;
-using PSInzinerija1.Data.Models;
-using PSInzinerija1.Filters;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
 using PSInzinerija1.Shared.Data.Models;
-
+using Backend.Filters;
+using Backend.Data.ApplicationDbContext;
+using Backend.Data.Models;
+using Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
