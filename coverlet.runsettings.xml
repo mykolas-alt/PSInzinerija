@@ -1,0 +1,20 @@
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Exclude>
+            [*]*.Data*,
+            [*]*.Filters.*,
+            [Backend]*.Migrations*,
+            [*]Microsoft.AspNetCore*,
+            [Frontend]Frontend.Components*,
+            [Frontend]*.Extensions*,
+            [Frontend]*.Exceptions*
+          </Exclude>
+          <ExcludeByFile>**/Program.cs</ExcludeByFile>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
