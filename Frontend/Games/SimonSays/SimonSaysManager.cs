@@ -17,7 +17,7 @@ namespace PSInzinerija1.Games.SimonSays
         public bool IsShowingSequence { get; set; } = false;
         private readonly Random rand = new Random();
 
-        public event Action OnStatisticsChanged;
+        public event Action? OnStatisticsChanged;
 
         public Action? OnStateChanged { get; set; }
         public bool IsDisabled { get; set; } = false;

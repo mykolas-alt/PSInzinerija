@@ -40,6 +40,7 @@ builder.Services.AddAuthentication()
 builder.Services.AddTransient<HighScoreService>();
 builder.Services.AddSingleton<APITrackingService>();
 builder.Services.AddScoped<APIHitCountFilter>();
+builder.Services.AddScoped<WordListService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();

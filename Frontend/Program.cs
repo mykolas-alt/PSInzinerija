@@ -20,6 +20,7 @@ builder.Services.AddHeaderPropagation(options =>
 });
 
 builder.Services.AddScoped<HighScoreAPIService>();
+builder.Services.AddScoped<WordListAPIService>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
 
 builder.Services.AddCascadingAuthenticationState();
