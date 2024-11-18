@@ -1,0 +1,43 @@
+Summary
+  Generated on: 19/11/2024 - 00:11:15
+  Coverage date: 18/11/2024 - 23:22:51 - 19/11/2024 - 00:10:41
+  Parser: MultiReport (3x Cobertura)
+  Assemblies: 2
+  Classes: 21
+  Files: 23
+  Line coverage: 41.4%
+  Covered lines: 239
+  Uncovered lines: 337
+  Coverable lines: 576
+  Total lines: 1135
+  Branch coverage: 32.8% (44 of 134)
+  Covered branches: 44
+  Total branches: 134
+  Method coverage: 43.8% (53 of 121)
+  Covered methods: 53
+  Total methods: 121
+
+Frontend                                                       41.6%
+  Frontend.Components.LoginForm                                 0.0%
+  Frontend.Components.LogoutButton                              0.0%
+  Frontend.Components.Pages.Error                               0.0%
+  Frontend.Components.Pages.Home                                0.0%
+  Frontend.Components.Pages.Leaderboard.Leaderboard             0.0%
+  Frontend.Components.Pages.Registration                        0.0%
+  Frontend.Components.Pages.SimonSays.SimonSays                 0.0%
+  Frontend.Components.Pages.VisualMemory.VisualMemory           0.0%
+  Frontend.Components.RegistrationForm                          0.0%
+  Frontend.Services.HighScoreAPIService                        81.6%
+  Frontend.Services.IdentityAuthenticationStateProvider        76.9%
+  Program                                                       0.0%
+  PSInzinerija1.Extensions.ProtectedSessionStorageExtensions    0.0%
+  PSInzinerija1.Games.SimonSays.Models.Button                  80.6%
+  PSInzinerija1.Games.SimonSays.SimonSaysManager               92.3%
+  PSInzinerija1.Games.VisualMemory.Models.Pattern              89.6%
+  PSInzinerija1.Games.VisualMemory.Models.PatternCell         100.0%
+  PSInzinerija1.Games.VisualMemory.VisualMemoryManager         41.9%
+
+Shared                                                         20.0%
+  PSInzinerija1.Shared.Data.Models.GameInfo                     0.0%
+  PSInzinerija1.Shared.Data.Models.LeaderboardEntry             0.0%
+  PSInzinerija1.Shared.Data.Models.UserInfo                   100.0%
