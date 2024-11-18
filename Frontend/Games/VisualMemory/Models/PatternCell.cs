@@ -1,4 +1,4 @@
-namespace PSInzinerija1.Games.VisualMemory.Models
+namespace Frontend.Games.VisualMemory.Models
 {
     public class PatternCell(PatternValue value, int index, bool pressed = false)
     {

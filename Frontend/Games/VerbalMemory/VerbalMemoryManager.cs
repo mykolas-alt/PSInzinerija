@@ -1,17 +1,15 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using PSInzinerija1.Games.VerbalMemory;
-using PSInzinerija1.Enums;
-using PSInzinerija1.Exceptions;
-using Frontend.Services;
 
-namespace PSInzinerija1.Games.VerbalMemory
+using PSInzinerija1.Enums;
+
+namespace Frontend.Games.VerbalMemory
 {
     public class VerbalMemoryManager : IGameManager
     {
         public int MistakeCount { get; private set; } = 0;
-        public List<string> WordList { get; private set; } = new List<string>();
-        public List<string> WordsShown { get; private set; } = new List<string>();
+        public List<string> WordList { get; private set; } = [];
+        public List<string> WordsShown { get; private set; } = [];
         public bool GameOver { get; private set; } = false;
         public string CurrentWord = string.Empty;
         public int Score { get; private set; } = 0;
