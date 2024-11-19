@@ -16,7 +16,7 @@ public class WordListServiceTests
     }
 
     [Fact]
-    public async Task GetWordsFromFileAsync_ShouldReturnWords_WhenFileExists()
+    public async Task GetWordsFromFileAsync_WhenFileExists_ShouldReturnWords()
     {
         var filePath = "testfile.txt";
         var fileContent = "apple banana, cherry; apple";
@@ -27,10 +27,11 @@ public class WordListServiceTests
         Assert.Contains("banana", result);
         Assert.Contains("cherry", result);
         Assert.Equal(3, result.Count);
+        File.Delete(filePath);
     }
 
     [Fact]
-    public async Task GetWordsFromFileAsync_ShouldReturnNull_WhenFileDoesNotExist()
+    public async Task GetWordsFromFileAsync_WhenFileDoesNotExist_ShouldReturnNull()
     {
         var filePath = "nonexistentfile.txt";
         var result = await _wordListService.GetWordsFromFileAsync(filePath);
@@ -38,7 +39,7 @@ public class WordListServiceTests
     }
 
     [Fact]
-    public async Task GetWordsFromFileAsync_ShouldReturnEmptyList_WhenFileIsEmpty()
+    public async Task GetWordsFromFileAsync_WhenFileIsEmpty_ShouldReturnEmptyList()
     {
         var filePath = "emptyfile.txt";
         File.WriteAllText(filePath, string.Empty);
@@ -47,5 +48,6 @@ public class WordListServiceTests
 
         Assert.NotNull(result);
         Assert.Empty(result);
+        File.Delete(filePath);
     }
 }

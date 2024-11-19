@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+
 using PSInzinerija1.Controllers;
 using PSInzinerija1.Services;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+
 using Xunit;
 
 public class WordListControllerTests
@@ -41,7 +44,7 @@ public class WordListControllerTests
     }
 
     [Fact]
-    public async Task GetWordsFromFileAsync_ShouldReturnOkResult_WhenWordsFound()
+    public async Task GetWordsFromFileAsync_WhenWordsFound_ShouldReturnOkResult()
     {
         var fileName = "testfile.txt";
         var words = "apple banana cherry";
@@ -58,18 +61,16 @@ public class WordListControllerTests
     }
 
     [Fact]
-    public async Task GetWordsFromFileAsync_ShouldReturnBadRequest_WhenFileNameIsInvalid()
+    public async Task GetWordsFromFileAsync_WhenFileNameIsInvalid_ShouldReturnBadRequest()
     {
         var fileName = "invalidfile.pdf";
-
         var result = await _controller.GetWordsFromFileAsync(fileName);
-
         var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
         Assert.IsType<BadRequestResult>(actionResult.Result);
     }
 
     [Fact]
-    public async Task GetWordsFromFileAsync_ShouldReturnNotFound_WhenNoWordsFound()
+    public async Task GetWordsFromFileAsync_WhenNoWordsFound_ShouldReturnNotFound()
     {
         var fileName = "emptyfile.txt";
         await CreateFileWithWordsAsync(fileName, string.Empty);
