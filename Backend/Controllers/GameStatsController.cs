@@ -10,7 +10,7 @@ public class GameStatsController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public GameStatsControllerNew(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+    public GameStatsController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
