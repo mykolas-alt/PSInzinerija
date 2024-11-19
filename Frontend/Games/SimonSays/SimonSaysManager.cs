@@ -115,7 +115,7 @@ namespace Frontend.Games.SimonSays
             {
                 timer.Stop();
                 TimeSpan timeTaken = timer.Elapsed;
-                
+                RecentScore = Level;
                 if (Level > HighScore)
                 {
                     HighScore = Level;
@@ -178,14 +178,7 @@ namespace Frontend.Games.SimonSays
             return true;
         }
 
-        private void UpdateRecentScores(int latestScore)
-        {
-            for (int i = 0; i < RecentScores.Length - 1; i++)
-            {
-                RecentScores[i+1] = RecentScores[i];
-            }
-            RecentScores[0] = latestScore;
-        }
+        
 
         // private async Task SaveStatsAsync(SimonSaysStats stats)
         // {

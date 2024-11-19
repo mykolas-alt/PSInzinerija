@@ -8,7 +8,7 @@ namespace Frontend.Games.VisualMemory
 {
     public class VisualMemoryManager : IGameManager
     {
-        public record VisualMemoryStats(int HighScore, int[] RecentScores, int[] GameMistakes);
+        public record VisualMemoryStats(int HighScore, int RecentScores, int GameMistakes);
         public int Score { get; private set; } = 0;
         public int GameMistakes { get; private set; } = 0;
         public int RecentScore {get; set;} = 0;
@@ -19,7 +19,7 @@ namespace Frontend.Games.VisualMemory
         {
             get
             {
-                var obj = new VisualMemoryStats(HighScore, RecentScore, GameMistake);
+                var obj = new VisualMemoryStats(HighScore, RecentScore, GameMistakes);
                 var json = JsonSerializer.Serialize(obj);
 
                 return json.ToString();
@@ -35,6 +35,7 @@ namespace Frontend.Games.VisualMemory
 
         public async Task StartNewGame()
         {
+
             Score = 0;
             _gameMistakes = 0;
             Pattern = new();
@@ -79,7 +80,7 @@ namespace Frontend.Games.VisualMemory
             if (_mistakeCount >= 3)
             {
                 // game over
-                UpdateRecentScores(Score);
+                RecentScore = Score;
                 await StartNewGame();
 
             }
@@ -102,13 +103,7 @@ namespace Frontend.Games.VisualMemory
         }
         private void UpdateRecentScores(int latestScore)
         {
-            // Shift the scores to the left
-            for (int i = 0; i < RecentScores.Length - 1; i++)
-            {
-                RecentScores[i+1] = RecentScores[i];
-            }
-            // Add the latest score to the end
-            RecentScores[0] = latestScore;
+            RecentScore = latestScore;
         }
 
         private void ResetRound()
@@ -151,7 +146,7 @@ namespace Frontend.Games.VisualMemory
                 
                 if(stats?.RecentScores != null)
                 {
-                    RecentScores = stats.RecentScores;
+                    RecentScore = stats.RecentScore;
                 }
             }
         }
