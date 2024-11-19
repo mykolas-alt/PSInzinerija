@@ -69,7 +69,7 @@ namespace PSInzinerija1.Services
 
             // Update common stats
             highScoresEntry.HighScore = stats.HighScore;
-            highScoresEntry.RecentScores = stats.RecentScore;
+            highScoresEntry.RecentScore = stats.RecentScore;
 
             // Update game-specific stats
             if (stats is VisualMemoryStats visualMemoryStats)

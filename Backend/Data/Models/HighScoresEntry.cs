@@ -18,13 +18,11 @@ namespace Backend.Data.Models
         public required AvailableGames GameId { get; set; }
         [Column("record_date")]
         public required DateTime RecordDate { get; set; }
+        [Column("mistakes")]
         public int Mistakes { get; set; }
-        [Column("recent_scores")]
-        public int RecentScores { get; set; }
-        [Column("game_id")]
-        public AvailableGames GameId { get; set; }
-        [Column("fastest_times")]
-        public int TimePlayed { get; set; } 
-        [Column("record_date")]
+        [Column("recent_score")]
+        public int RecentScore { get; set; }
+        [Column("recent_time")]
+        public string TimePlayed { get; set; } 
     }
 }
