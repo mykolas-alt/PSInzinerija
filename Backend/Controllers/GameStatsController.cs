@@ -5,7 +5,7 @@ using Shared.Enums;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GameStatsControllerNew : ControllerBase
+public class GameStatsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
