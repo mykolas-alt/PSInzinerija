@@ -9,7 +9,7 @@ namespace PSInzinerija1.Games.VerbalMemory
 {
     public class VerbalMemoryManager : IGameManager
     {
-        public int MistakeCount { get; private set; } = 0;
+        public int MistakeCount { get; set; } = 0;
         public List<string> WordList { get; private set; } = new List<string>();
         public List<string> WordsShown { get; private set; } = new List<string>();
         public bool GameOver { get; private set; } = false;
