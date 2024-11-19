@@ -4,6 +4,6 @@ namespace PSInzinerija1.Shared.Data.Models.Stats
 {
     public class Stats
     {
-        public int[] RecentScores { get; set; } = new int[3];
+        public int RecentScore { get; set; } = 0;
     }
 }

@@ -33,7 +33,7 @@ namespace PSInzinerija1.Services
             var stats = new T
             {
                 HighScore = highScoresEntry.HighScore,
-                RecentScores = highScoresEntry.RecentScores
+                RecentScore = highScoresEntry.RecentScore
             };
 
             // Populate game-specific fields
@@ -43,7 +43,7 @@ namespace PSInzinerija1.Services
             }
             else if (stats is SimonSaysStats simonSaysStats)
             {
-                simonSaysStats.FastestTimes = highScoresEntry.FastestTimes;
+                simonSaysStats.FastestTime = highScoresEntry.MostRecentTime;
             }
 
             return stats;
@@ -78,7 +78,7 @@ namespace PSInzinerija1.Services
             }
             else if (stats is SimonSaysStats simonSaysStats)
             {
-                highScoresEntry.FastestTimes = simonSaysStats.FastestTimes;
+                highScoresEntry.MostRecentTime = simonSaysStats.MostRecentTime;
             }
 
             await _context.SaveChangesAsync();

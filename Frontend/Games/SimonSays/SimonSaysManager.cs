@@ -29,15 +29,14 @@ namespace PSInzinerija1.Games.SimonSays
 
         public AvailableGames GameID => AvailableGames.SimonSays;
 
-        public int[] RecentScores = new int[3];
-        public int[] GameMistakes = new int[3];
-        public int[] FastestTimes = new int[3];
+        public int RecentScore { get; set; } = 0;
+        public int MostRecentTime;
 
         // public string SerializedStatistics
         // {
         //     get
         //     {
-        //         var specificStats = new SimonSaysStats { FastestTimes = FastestTimes };
+        //         var specificStats = new SimonSaysStats { MostRecentTime = MostRecentTime };
         //         var gameStats = new GameStats<SimonSaysStats>(specificStats)
         //         {
         //             HighScore = HighScore,
@@ -117,8 +116,8 @@ namespace PSInzinerija1.Games.SimonSays
                 var updatedStats = new SimonSaysStats
                 {
                     HighScore = HighScore,
-                    RecentScores = RecentScores,
-                    FastestTimes = FastestTimes
+                    RecentScore = RecentScore,
+                    MostRecentTime = MostRecentTime
                 };
 
                 await SaveStatsAsync(updatedStats);
