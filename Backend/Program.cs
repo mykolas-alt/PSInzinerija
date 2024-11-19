@@ -40,6 +40,7 @@ builder.Services.AddAuthentication()
 builder.Services.AddTransient<HighScoreService>();
 builder.Services.AddSingleton<APITrackingService>();
 builder.Services.AddScoped<APIHitCountFilter>();
+builder.Services.AddScoped<WordListService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();
@@ -86,7 +87,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     // Cookie settings
     options.Cookie.HttpOnly = true;
-    options.Cookie.Expiration = TimeSpan.FromMinutes(30);
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
 });
