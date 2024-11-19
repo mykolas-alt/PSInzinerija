@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using System.Text.Json;
+using System.Diagnostics;
 
 
 using Frontend.Games.SimonSays.Models;
-
+using Shared.Enums;
+using Microsoft.VisualBasic;
+using System.Diagnostics;
 
 
 namespace Frontend.Games.SimonSays
@@ -29,13 +32,14 @@ namespace Frontend.Games.SimonSays
         public AvailableGames GameID => AvailableGames.SimonSays;
 
         public int RecentScore { get; set; } = 0;
-        public int MostRecentTime;
+        public int TimePlayed;
+        private readonly Stopwatch timer = new Stopwatch();
 
         // public string SerializedStatistics
         // {
         //     get
         //     {
-        //         var specificStats = new SimonSaysStats { MostRecentTime = MostRecentTime };
+        //         var specificStats = new SimonSaysStats { TimePlayed = TimePlayed };
         //         var gameStats = new GameStats<SimonSaysStats>(specificStats)
         //         {
         //             HighScore = HighScore,
@@ -75,6 +79,7 @@ namespace Frontend.Games.SimonSays
             PlayerInput.Clear();
             GameOver = false;
             await GenerateSequence();
+            timer.Start();
         }
 
         private async Task GenerateSequence()
@@ -85,6 +90,7 @@ namespace Frontend.Games.SimonSays
 
         private async Task ShowSequence()
         {
+            timer.Stop();
             IsShowingSequence = true;
 
             foreach (int index in Sequence)
@@ -95,6 +101,7 @@ namespace Frontend.Games.SimonSays
                 await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration: levelBasedFlash);
             }
             IsShowingSequence = false;
+            timer.Start();
         }
 
         public async Task HandleTileClick(int tileIndex)
@@ -106,21 +113,23 @@ namespace Frontend.Games.SimonSays
 
             if (!IsInputCorrect())
             {
+                timer.Stop();
+                TimeSpan timeTaken = timer.Elapsed;
+                
                 if (Level > HighScore)
                 {
                     HighScore = Level;
                     OnStatisticsChanged?.Invoke();
                 }
-                
                 var updatedStats = new SimonSaysStats
                 {
                     HighScore = HighScore,
                     RecentScore = RecentScore,
-                    MostRecentTime = MostRecentTime
+                    TimePlayed = "Recent play time: " + timeTaken.ToString(@"m\:ss\.fff")
                 };
 
                 await SaveStatsAsync(updatedStats);
-
+                
                 GameOver = true;
                 Level = 0;
                 IsDisabled = false;

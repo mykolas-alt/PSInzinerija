@@ -4,6 +4,6 @@ namespace PSInzinerija1.Shared.Data.Models.Stats
 {
 public class SimonSaysStats : Stats
     {
-        public int MostRecentTime { get; set; } = 0;
+        public string TimePlayed { get; set; }
     }
 }

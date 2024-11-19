@@ -2,7 +2,7 @@ using System.Text.Json;
 
 using Frontend.Games.VisualMemory.Models;
 
-using PSInzinerija1.Enums;
+using Shared.Enums;
 
 namespace Frontend.Games.VisualMemory
 {

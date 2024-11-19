@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using PSInzinerija1.Enums;
+using Shared.Enums;
 
 namespace Backend.Data.Models
 {
@@ -24,7 +24,7 @@ namespace Backend.Data.Models
         [Column("game_id")]
         public AvailableGames GameId { get; set; }
         [Column("fastest_times")]
-        public int MostRecentTime { get; set; } 
+        public int TimePlayed { get; set; } 
         [Column("record_date")]
     }
 }

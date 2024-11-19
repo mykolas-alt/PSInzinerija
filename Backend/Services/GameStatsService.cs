@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using PSInzinerija1.Data.ApplicationDbContext;
-using PSInzinerija1.Data.Models;
-using PSInzinerija1.Shared.Data.Models.Stats;
-using PSInzinerija1.Enums;
+using Backend.Data.ApplicationDbContext;
+using Backend.Data.Models;
+using Shared.Data.Models.Stats;
+using Shared.Enums;
 
 namespace PSInzinerija1.Services
 {
@@ -43,7 +43,7 @@ namespace PSInzinerija1.Services
             }
             else if (stats is SimonSaysStats simonSaysStats)
             {
-                simonSaysStats.FastestTime = highScoresEntry.MostRecentTime;
+                simonSaysStats.TimePlayed = highScoresEntry.TimePlayed;
             }
 
             return stats;
@@ -78,7 +78,7 @@ namespace PSInzinerija1.Services
             }
             else if (stats is SimonSaysStats simonSaysStats)
             {
-                highScoresEntry.MostRecentTime = simonSaysStats.MostRecentTime;
+                highScoresEntry.TimePlayed = simonSaysStats.TimePlayed;
             }
 
             await _context.SaveChangesAsync();

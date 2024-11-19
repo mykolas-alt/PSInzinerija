@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using PSInzinerija1.Enums;
-using PSInzinerija1.Shared.Data.Models;
+using Shared.Enums;
+using Shared.Data.Models;
 using Frontend.Services;
 using Frontend.Games.SimonSays;
 using Frontend.Games;
 using Frontend.Extensions;
+using System.Runtime.CompilerServices;
 
 namespace Frontend.Components.Pages.SimonSays
 {
