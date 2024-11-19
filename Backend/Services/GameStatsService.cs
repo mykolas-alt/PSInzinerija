@@ -1,87 +1,142 @@
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+
 using Backend.Data.ApplicationDbContext;
 using Backend.Data.Models;
-using Shared.Data.Models.Stats;
-using Shared.Enums;
 
-namespace PSInzinerija1.Services
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+using Shared.Enums;
+using PSInzinerija1.Shared.Data.Models.Stats;
+
+
+namespace Backend.Services
 {
-    public class GameStatsService<T> where T : Stats, new()
+    public class GameStatsService<T> where T : GameStats, new()
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly ILogger<GameStatsService<T>> _logger;
 
-        public GameStatsService(ApplicationDbContext context)
+        public GameStatsService(ApplicationDbContext context, UserManager<User> userManager, ILogger<GameStatsService<T>> logger)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // Fetch Stats for a Specific User and Game
-        public async Task<T> GetStatsAsync(string userId, AvailableGames gameId)
+        public async Task<T?> GetUserStatsAsync(AvailableGames gameId, ClaimsPrincipal user)
         {
-            var highScoresEntry = await _context.HighScores
-                .Where(e => e.Id == userId && e.GameId == gameId)
-                .OrderByDescending(e => e.RecordDate) // Ensure the most recent entry
-                .FirstOrDefaultAsync();
+            var userId = _userManager.GetUserId(user);
 
-            if (highScoresEntry == null)
+            if (userId == null)
             {
-                return new T(); // Return a default instance if no data exists
+                return default;
             }
 
-            var stats = new T
+            try
             {
-                HighScore = highScoresEntry.HighScore,
-                RecentScore = highScoresEntry.RecentScore
-            };
+                var gameStatsEntry = await _context.GameStatistics
+                    .Where(e => e.Id == userId && e.GameId == gameId)
+                    .FirstOrDefaultAsync();
 
-            // Populate game-specific fields
-            if (stats is VisualMemoryStats visualMemoryStats)
-            {
-                visualMemoryStats.GameMistakes = highScoresEntry.Mistakes;
-            }
-            else if (stats is SimonSaysStats simonSaysStats)
-            {
-                simonSaysStats.TimePlayed = highScoresEntry.TimePlayed;
-            }
+                if (gameStatsEntry == null)
+                {
+                    return null;
+                }
 
-            return stats;
+                var stats = new T
+                {
+                    RecentScore = gameStatsEntry.RecentScore
+                };
+
+                // Populate game-specific fields
+                if (stats is VisualMemoryStats visualMemoryStats)
+                {
+                    if (gameStatsEntry.Mistakes == null)
+                    {
+                        return null;
+                    }
+                    visualMemoryStats.GameMistakes = (int)gameStatsEntry.Mistakes;
+                }
+                else if (stats is SimonSaysStats simonSaysStats)
+                {
+                    if (gameStatsEntry.TimePlayed == null)
+                    {
+                        return null;
+                    }
+                    simonSaysStats.TimePlayed = (TimeSpan)gameStatsEntry.TimePlayed;
+                }
+
+                return stats;
+            }
+            catch (Exception e) when (e is OperationCanceledException || e is ArgumentNullException)
+            {
+                _logger.LogError("{error}", e.Message);
+            }
+            return null;
         }
 
         // Save Stats for a Specific User and Game
-        public async Task SaveStatsAsync(string userId, AvailableGames gameId, T stats)
+        public async Task SaveUserStatsAsync(AvailableGames gameId, ClaimsPrincipal user, T stats)
         {
-            var highScoresEntry = await _context.HighScores
-                .FirstOrDefaultAsync(e => e.Id == userId && e.GameId == gameId);
+            var userId = _userManager.GetUserId(user);
 
-            if (highScoresEntry == null)
+            if (userId == null)
             {
-                // Create a new database entry if one doesn't exist
-                highScoresEntry = new HighScoresEntry
+                return;
+            }
+            GameStatisticsEntry? entry = null;
+            if (stats is VisualMemoryStats visualMemoryStats)
+            {
+                entry = new GameStatisticsEntry()
                 {
                     Id = userId,
                     GameId = gameId,
-                    RecordDate = DateTime.UtcNow
+                    RecentScore = visualMemoryStats.RecentScore,
+                    Mistakes = visualMemoryStats.GameMistakes
                 };
-                _context.HighScores.Add(highScoresEntry);
-            }
-
-            // Update common stats
-            highScoresEntry.HighScore = stats.HighScore;
-            highScoresEntry.RecentScore = stats.RecentScore;
-
-            // Update game-specific stats
-            if (stats is VisualMemoryStats visualMemoryStats)
-            {
-                highScoresEntry.Mistakes = visualMemoryStats.GameMistakes;
             }
             else if (stats is SimonSaysStats simonSaysStats)
             {
-                highScoresEntry.TimePlayed = simonSaysStats.TimePlayed;
+                entry = new GameStatisticsEntry()
+                {
+                    Id = userId,
+                    GameId = gameId,
+                    RecentScore = simonSaysStats.RecentScore,
+                    TimePlayed = simonSaysStats.TimePlayed
+                };
             }
 
-            await _context.SaveChangesAsync();
+            if (entry == null)
+            {
+                return;
+            }
+
+            try
+            {
+               if (EntryExists(userId, entry.GameId))
+                {
+                    _context.Entry(entry).State = EntityState.Modified;
+                }
+                else
+                {
+                    _context.Entry(entry).State = EntityState.Added;
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("{error}", e.Message);
+                return;
+            }
+            _context.GameStatistics.Add(entry);
+                
+        }
+        private bool EntryExists(string id, AvailableGames gameId)
+        {
+            return _context.GameStatistics.Any(e => e.GameId == gameId && e.Id == id);
         }
     }
 }

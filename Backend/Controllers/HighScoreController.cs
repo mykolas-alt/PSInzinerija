@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PSInzinerija1.Enums;
+using Shared.Enums;
 using PSInzinerija1.Shared.Data.Models;
 using Backend.Filters;
 using Backend.Data.Models;

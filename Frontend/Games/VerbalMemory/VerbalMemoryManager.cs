@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-using PSInzinerija1.Enums;
+using Shared.Enums;
 
 namespace Frontend.Games.VerbalMemory
 {

@@ -2,8 +2,8 @@ using System.Text.Json.Serialization;
 
 namespace PSInzinerija1.Shared.Data.Models.Stats
 {
-public class SimonSaysStats : Stats
+public class SimonSaysStats : GameStats
     {
-        public string TimePlayed { get; set; }
+        public TimeSpan TimePlayed { get; set; }
     }
 }

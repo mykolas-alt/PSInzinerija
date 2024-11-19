@@ -1,4 +1,4 @@
-﻿namespace PSInzinerija1.Enums
+﻿namespace Shared.Enums
 {
     public enum AvailableGames
     {

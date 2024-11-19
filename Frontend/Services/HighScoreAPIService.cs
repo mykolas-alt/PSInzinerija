@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
 using PSInzinerija1.Shared.Data.Models;
-using PSInzinerija1.Enums;
+using Shared.Enums;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 

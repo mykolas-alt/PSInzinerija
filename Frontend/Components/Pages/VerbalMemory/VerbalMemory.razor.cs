@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
-using PSInzinerija1.Enums;
+using Shared.Enums;
 using Frontend.Services;
 using Frontend.Games.VerbalMemory;
 using Frontend.Games;

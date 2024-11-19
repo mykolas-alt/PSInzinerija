@@ -6,7 +6,7 @@ using Backend.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using PSInzinerija1.Enums;
+using Shared.Enums;
 using PSInzinerija1.Shared.Data.Models;
 
 namespace Backend.Services

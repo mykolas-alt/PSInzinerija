@@ -1,6 +1,6 @@
 using System.Text;
 
-using PSInzinerija1.Enums;
+using Shared.Enums;
 using PSInzinerija1.Shared.Data.Models;
 
 namespace Backend.Services

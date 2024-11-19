@@ -1,4 +1,4 @@
-using PSInzinerija1.Enums;
+using Shared.Enums;
 
 namespace Frontend.Games
 {
