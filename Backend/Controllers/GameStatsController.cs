@@ -11,8 +11,8 @@ public class GameStatsController : ControllerBase
         _httpContextAccessor = httpContextAccessor;
     }
 
-    [HttpGet("recentscores")]
-    public async Task<IActionResult> GetRecentScores()
+    [HttpGet("recentscore")]
+    public async Task<IActionResult> GetRecentScore()
     {
         var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
@@ -23,10 +23,10 @@ public class GameStatsController : ControllerBase
         return Ok(highScoreEntry.RecentScores);
     }
 
-    [HttpPost("recentscores")]
-    public async Task<IActionResult> SaveRecentScores([FromBody] int[] recentScores)
+    [HttpPost("recentscore")]
+    public async Task<IActionResult> SaveRecentScore([FromBody] int recentScore)
     {
-        if (recentScores.Length != 3) return BadRequest("Exactly 3 scores are required.");
+        if (recentScore.Length != 3) return BadRequest("Exactly 3 scores are required.");
 
         var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
@@ -34,12 +34,12 @@ public class GameStatsController : ControllerBase
         var highScoreEntry = await _context.HighScores.FirstOrDefaultAsync(h => h.Id == userId);
         if (highScoreEntry == null)
         {
-            highScoreEntry = new HighScoresEntry { Id = userId, RecentScores = recentScores };
+            highScoreEntry = new HighScoresEntry { Id = userId, RecentScore = recentScore };
             _context.HighScores.Add(highScoreEntry);
         }
         else
         {
-            highScoreEntry.RecentScores = recentScores;
+            highScoreEntry.RecentScores = recentScore;
         }
 
         await _context.SaveChangesAsync();
