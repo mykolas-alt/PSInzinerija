@@ -40,9 +40,11 @@ namespace Backend.Services
                 var gameStatsEntry = await _context.GameStatistics
                     .Where(e => e.Id == userId && e.GameId == gameId)
                     .FirstOrDefaultAsync();
+                _logger.LogInformation("GameStatsEntry: {gameStatsEntry}", gameStatsEntry);
 
                 if (gameStatsEntry == null)
                 {
+                    _logger.LogError("GameStatsEntry is null");
                     return null;
                 }
 
@@ -56,6 +58,7 @@ namespace Backend.Services
                 {
                     if (gameStatsEntry.Mistakes == null)
                     {
+                        _logger.LogError("Mistakes is null");
                         return null;
                     }
                     visualMemoryStats.GameMistakes = (int)gameStatsEntry.Mistakes;
@@ -64,6 +67,7 @@ namespace Backend.Services
                 {
                     if (gameStatsEntry.TimePlayed == null)
                     {
+                        _logger.LogError("TimePlayed is null");
                         return null;
                     }
                     simonSaysStats.TimePlayed = (TimeSpan)gameStatsEntry.TimePlayed;
@@ -75,6 +79,7 @@ namespace Backend.Services
             {
                 _logger.LogError("{error}", e.Message);
             }
+            _logger.LogError("Failed to fetch user stats for game {gameId}", gameId);
             return null;
         }
 

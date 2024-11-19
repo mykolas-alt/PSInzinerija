@@ -2,110 +2,62 @@ using Microsoft.AspNetCore.Mvc;
 using Backend.Data.ApplicationDbContext;
 using Backend.Data.Models;
 using Shared.Enums;
+using Microsoft.AspNetCore.Authorization;
+using PSInzinerija1.Shared.Data.Models.Stats;
+using Backend.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class GameStatsController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly GameStatsService<VisualMemoryStats> _visualMemoryStatsService;
+    private readonly GameStatsService<SimonSaysStats> _simonSaysStatsService;
 
-    public GameStatsController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+    public GameStatsController(IServiceProvider serviceProvider)
     {
-        _context = context;
-        _httpContextAccessor = httpContextAccessor;
+        _visualMemoryStatsService = serviceProvider.GetRequiredService<GameStatsService<VisualMemoryStats>>();
+        _simonSaysStatsService = serviceProvider.GetRequiredService<GameStatsService<SimonSaysStats>>();
     }
-    [HttpGet("{game}/recentscore")]
-    public async Task<ActionResult> GetRecentScore()
+    
+    [Authorize]
+    [HttpGet("{game}/stats")]
+    public async Task<ActionResult<GameStats>> GetStats(AvailableGames game)
     {
-        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
-        var gameStatsEntry = await _context.GameStatistics.FirstOrDefaultAsync(h => h.Id == userId);
-        if (gameStatsEntry == null) return NotFound();
-
-        return Ok(gameStatsEntry.RecentScore);
-    }
-    [HttpPost("{game}/recentscore")]
-    public async Task<ActionResult> SaveRecentScore([FromBody] int recentScore, AvailableGames game)
-    {
-        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
-        var gameStatsEntry = await _context.GameStatistics.FirstOrDefaultAsync(h => h.Id == userId);
-        if (gameStatsEntry == null)
+        if(game == AvailableGames.VisualMemory)
         {
-            gameStatsEntry = new GameStatisticsEntry() { Id = userId, GameId = game, RecentScore = recentScore };
-            _context.GameStatistics.Add(gameStatsEntry);
+            var stats = await _visualMemoryStatsService.GetUserStatsAsync(AvailableGames.VisualMemory, HttpContext.User);
+            if (stats == null) return NotFound();
+            return Ok(stats);
         }
-        else
+        else if(game == AvailableGames.SimonSays)
         {
-            gameStatsEntry.RecentScore = recentScore;
+            var stats = await _simonSaysStatsService.GetUserStatsAsync(AvailableGames.SimonSays, HttpContext.User);
+            if (stats == null) return NotFound();
+            return Ok(stats);
         }
 
-        await _context.SaveChangesAsync();
-        return Ok();
+        return BadRequest("Invalid game");
     }
-    [HttpGet("{game}/mistakes")]
-    public async Task<ActionResult> GetGameMistakes()
+
+    [Authorize]
+    [HttpPost("{game}/stats")]
+    public async Task<ActionResult> SaveStats(AvailableGames game)
     {
-        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
-        var gameStatsEntry = await _context.GameStatistics.FirstOrDefaultAsync(h => h.Id == userId);
-        if (gameStatsEntry == null) return NotFound();
-
-        return Ok(gameStatsEntry.GameMistakes);
-    }
-    [HttpPost("{game}/mistakes")]
-    public async Task<ActionResult> SaveGameMistakes([FromBody] int gameMistakes, AvailableGames game)
-    {
-        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
-        var gameStatsEntry = await _context.GameStatistics.FirstOrDefaultAsync(h => h.Id == userId);
-        if (gameStatsEntry == null)
+        
+        if(game == AvailableGames.VisualMemory )
         {
-            gameStatsEntry = new GameStatisticsEntry() { Id = userId, GameId = game, Mistakes = gameMistakes };
-            _context.GameStatistics.Add(gameStatsEntry);
+            var stats = await Request.ReadFromJsonAsync<VisualMemoryStats>();
+            if(stats == null) return BadRequest("Invalid stats");
+            await _visualMemoryStatsService.SaveUserStatsAsync(game, HttpContext.User, stats);
+            return Ok();
         }
-        else
+        else if(game == AvailableGames.SimonSays)
         {
-            gameStatsEntry.Mistakes = gameMistakes;
+            var stats = await Request.ReadFromJsonAsync<SimonSaysStats>();
+            if(stats == null) return BadRequest("Invalid stats");
+            await _simonSaysStatsService.SaveUserStatsAsync(game, HttpContext.User, stats);
+            return Ok();
         }
-
-        await _context.SaveChangesAsync();
-        return Ok();
-    }
-    [HttpGet("{game}/timeplayed")]
-    public async Task<ActionResult> GetTimePlayed()
-    {
-        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
-        var gameStatsEntry = await _context.GameStatistics.FirstOrDefaultAsync(h => h.Id == userId);
-        if (gameStatsEntry == null) return NotFound();
-
-        return Ok(gameStatsEntry.TimePlayed);
-    }
-    [HttpPost("{game}/timeplayed")]
-    public async Task<ActionResult> SaveTimePlayed([FromBody] TimeSpan timePlayed, AvailableGames game)
-    {
-        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
-        var gameStatsEntry = await _context.GameStatistics.FirstOrDefaultAsync(h => h.Id == userId);
-        if (gameStatsEntry == null)
-        {
-            gameStatsEntry = new GameStatisticsEntry() { Id = userId, GameId = game, TimePlayed = timePlayed };
-            _context.GameStatistics.Add(gameStatsEntry);
-        }
-        else
-        {
-            gameStatsEntry.TimePlayed = timePlayed;
-        }
-
-        await _context.SaveChangesAsync();
-        return Ok();
+        return BadRequest("Invalid game");
     }
 }

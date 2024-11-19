@@ -3,14 +3,16 @@ using System.Text.Json;
 using Frontend.Games.VisualMemory.Models;
 
 using Shared.Enums;
+using PSInzinerija1.Shared.Data.Models;
+using PSInzinerija1.Shared.Data.Models.Stats;
 
 namespace Frontend.Games.VisualMemory
 {
     public class VisualMemoryManager : IGameManager
     {
-        public record VisualMemoryStats(int HighScore, int RecentScores, int GameMistakes);
+        public record VisualMemoryHighScore(int HighScore);
         public int Score { get; private set; } = 0;
-        public int GameMistakes { get; private set; } = 0;
+        public int GameMistakes { get; set; } = 0;
         public int RecentScore {get; set;} = 0;
         public int HighScore { get; private set; } = 0;
         public Pattern Pattern { get; private set; } = new();
@@ -19,7 +21,7 @@ namespace Frontend.Games.VisualMemory
         {
             get
             {
-                var obj = new VisualMemoryStats(HighScore, RecentScore, GameMistakes);
+                var obj = new VisualMemoryHighScore(HighScore);
                 var json = JsonSerializer.Serialize(obj);
 
                 return json.ToString();
@@ -31,13 +33,13 @@ namespace Frontend.Games.VisualMemory
         private readonly int _roundStartDelay = 1500;
         private int _mistakeCount = 0;
         private int _correctCount = 0;
-        private int _gameMistakes = 0;
+        
 
         public async Task StartNewGame()
         {
 
             Score = 0;
-            _gameMistakes = 0;
+            GameMistakes = 0;
             Pattern = new();
             ResetRound();
             await BeginRound();
@@ -70,7 +72,7 @@ namespace Frontend.Games.VisualMemory
             if (buttonSquare.Value == PatternValue.Invalid)
             {
                 _mistakeCount++;
-                _gameMistakes++;
+                GameMistakes++;
             }
             else
             {
@@ -101,16 +103,13 @@ namespace Frontend.Games.VisualMemory
                 OnStatisticsChanged?.Invoke();
             }
         }
-        private void UpdateRecentScores(int latestScore)
-        {
-            RecentScore = latestScore;
-        }
+        
 
         private void ResetRound()
         {
             _correctCount = 0;
             _mistakeCount = 0;
-            _gameMistakes = 0;
+            GameMistakes = 0;
         }
 
         private async Task Advance()
@@ -136,18 +135,11 @@ namespace Frontend.Games.VisualMemory
                 return;
             }
 
-            VisualMemoryStats? stats = JsonSerializer.Deserialize<VisualMemoryStats>(json);
-            if(stats != null)
+            VisualMemoryHighScore? score = JsonSerializer.Deserialize<VisualMemoryHighScore>(json);
+
+            if (score?.HighScore != null && score?.HighScore > HighScore)
             {
-                if (stats?.HighScore != null && stats?.HighScore > HighScore)
-                {
-                    HighScore = stats.HighScore;
-                }
-                
-                if(stats?.RecentScores != null)
-                {
-                    RecentScore = stats.RecentScore;
-                }
+                HighScore = score.HighScore;
             }
         }
 

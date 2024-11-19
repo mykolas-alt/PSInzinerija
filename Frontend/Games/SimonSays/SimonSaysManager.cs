@@ -8,7 +8,7 @@ using System.Diagnostics;
 using Frontend.Games.SimonSays.Models;
 using Shared.Enums;
 using Microsoft.VisualBasic;
-using System.Diagnostics;
+
 
 
 namespace Frontend.Games.SimonSays
@@ -32,8 +32,9 @@ namespace Frontend.Games.SimonSays
         public AvailableGames GameID => AvailableGames.SimonSays;
 
         public int RecentScore { get; set; } = 0;
-        public int TimePlayed;
+        public TimeSpan TimePlayed;
         private readonly Stopwatch timer = new Stopwatch();
+
 
         // public string SerializedStatistics
         // {
@@ -121,14 +122,7 @@ namespace Frontend.Games.SimonSays
                     HighScore = Level;
                     OnStatisticsChanged?.Invoke();
                 }
-                var updatedStats = new SimonSaysStats
-                {
-                    HighScore = HighScore,
-                    RecentScore = RecentScore,
-                    TimePlayed = "Recent play time: " + timeTaken.ToString(@"m\:ss\.fff")
-                };
-
-                await SaveStatsAsync(updatedStats);
+                
                 
                 GameOver = true;
                 Level = 0;
@@ -138,7 +132,9 @@ namespace Frontend.Games.SimonSays
 
             if (PlayerInput.Count == Sequence.Count)
             {
+                
                 Level++;
+                RecentScore = Level;
                 await Task.Delay(200);
                 PlayerInput.Clear();
                 await GenerateSequence();
@@ -167,24 +163,15 @@ namespace Frontend.Games.SimonSays
 
         }
 
-        public bool SetHighScore(int? HighScore)
+        public bool SetHighScore(int? highScore)
         {
-            if (HighScore == null || HighScore.Value < HighScore)
+            if (highScore == null || highScore.Value < HighScore)
             {
                 return false;
             }
 
-            HighScore = HighScore.Value;
+            HighScore = highScore.Value;
             return true;
         }
-
-        
-
-        // private async Task SaveStatsAsync(SimonSaysStats stats)
-        // {
-        //     // Replace "user123" with logic to get the current user's ID
-        //     var userId = "user123"; // Replace with actual user retrieval
-        //     await GameStatsService.SaveStatsAsync(userId, AvailableGames.SimonSays, stats);
-        // }
     }
 }

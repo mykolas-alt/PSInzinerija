@@ -11,6 +11,7 @@ using Backend.Filters;
 using Backend.Data.ApplicationDbContext;
 using Backend.Data.Models;
 using Backend.Services;
+using PSInzinerija1.Shared.Data.Models.Stats;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -39,6 +40,8 @@ builder.Services.AddTransient<HighScoreService>();
 builder.Services.AddSingleton<APITrackingService>();
 builder.Services.AddScoped<APIHitCountFilter>();
 builder.Services.AddScoped<WordListService>();
+builder.Services.AddScoped<GameStatsService<VisualMemoryStats>>();
+builder.Services.AddScoped<GameStatsService<SimonSaysStats>>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();

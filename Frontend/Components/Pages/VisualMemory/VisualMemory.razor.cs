@@ -6,6 +6,8 @@ using Frontend.Services;
 using Frontend.Games.VisualMemory;
 using Frontend.Games;
 using Frontend.Extensions;
+using PSInzinerija1.Shared.Data.Models;
+using PSInzinerija1.Shared.Data.Models.Stats;
 
 namespace Frontend.Components.Pages.VisualMemory
 {
@@ -17,6 +19,7 @@ namespace Frontend.Components.Pages.VisualMemory
         [Inject]
         ProtectedSessionStorage SessionStorage { get; set; }
         [Inject]
+        StatsAPIService<VisualMemoryStats> StatsAPIService { get; set; }
         ILogger<VisualMemory> Logger { get; set; }
         VisualMemoryManager Manager { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -27,6 +30,7 @@ namespace Frontend.Components.Pages.VisualMemory
             Manager.OnStatisticsChanged += async () =>
             {
                 await SaveToDB(Manager);
+                // await SaveStatsToDB(Manager);
                 await SessionStorage.SaveStateSessionStorage(Manager);
             };
 
@@ -38,6 +42,7 @@ namespace Frontend.Components.Pages.VisualMemory
             if (firstRender)
             {
                 await FetchDataAsync();
+                await FetchStatsAsync();
             }
         }
 
@@ -69,6 +74,28 @@ namespace Frontend.Components.Pages.VisualMemory
             {
                 await SessionStorage.LoadFromSessionStorage(Manager);
                 Logger.LogInformation("Loaded from session storage.");
+            }
+            StateHasChanged();
+        }
+
+        private async Task SaveStatsToDB(VisualMemoryManager gameManager)
+        {
+            var stats = new VisualMemoryStats
+            {
+                RecentScore = gameManager.RecentScore,
+                GameMistakes = gameManager.GameMistakes
+            };
+            await StatsAPIService.SaveStatsAsync(gameManager.GameID, stats);
+        }
+
+        private async Task FetchStatsAsync()
+        {
+            var stats = await StatsAPIService.GetStatsAsync(AvailableGames.VisualMemory);
+            if (stats != null && stats.RecentScore != null)
+            {
+                Manager.RecentScore = stats.RecentScore;
+                Manager.GameMistakes = stats.GameMistakes;
+                Logger.LogInformation("Loaded from database.");
             }
             StateHasChanged();
         }
