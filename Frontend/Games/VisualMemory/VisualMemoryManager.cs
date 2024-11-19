@@ -1,12 +1,10 @@
 using System.Text.Json;
 
-using Microsoft.AspNetCore.SignalR;
+using Frontend.Games.VisualMemory.Models;
 
 using PSInzinerija1.Enums;
-using PSInzinerija1.Games.VisualMemory.Models;
-using PSInzinerija1.Shared.Data.Models;
 
-namespace PSInzinerija1.Games.VisualMemory
+namespace Frontend.Games.VisualMemory
 {
     public class VisualMemoryManager : IGameManager
     {

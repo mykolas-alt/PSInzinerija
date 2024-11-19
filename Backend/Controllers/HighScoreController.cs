@@ -1,18 +1,25 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PSInzinerija1.Enums;
-using PSInzinerija1.Data.Models;
-using PSInzinerija1.Services;
-using PSInzinerija1.Filters;
 using PSInzinerija1.Shared.Data.Models;
+using Backend.Filters;
+using Backend.Data.Models;
+using Backend.Services;
 
-namespace PSInzinerija1.Controllers
+namespace Backend.Controllers
 {
     [ApiController]
     [ServiceFilter<APIHitCountFilter>]
     [Route("api/[controller]")]
-    public class HighScoresController(HighScoreService highScoreService) : ControllerBase
+    public class HighScoresController : ControllerBase
     {
+        private readonly HighScoreService _highScoreService;
+
+        public HighScoresController(HighScoreService highScoreService)
+        {
+            _highScoreService = highScoreService ?? throw new ArgumentNullException(nameof(highScoreService));
+        }
+
         /// <summary>
         /// Gets all high score entries for a specific game
         /// </summary>
@@ -21,7 +28,7 @@ namespace PSInzinerija1.Controllers
         [HttpGet("{game}/all")]
         public async Task<ActionResult<IEnumerable<LeaderboardEntry>>> GetGameHighScoresAsync(AvailableGames game)
         {
-            var list = await highScoreService.GetGameHighScoresAsync(game);
+            var list = await _highScoreService.GetGameHighScoresAsync(game);
 
             return list == null ? NotFound() : Ok(list);
         }
@@ -33,7 +40,7 @@ namespace PSInzinerija1.Controllers
         [HttpGet]
         public async Task<ActionResult<List<HighScoresEntry>>> GetAllHighScoresAsync()
         {
-            var list = await highScoreService.GetAllHighScoresAsync();
+            var list = await _highScoreService.GetAllHighScoresAsync();
 
             return list == null ? NotFound() : Ok(list);
         }
@@ -47,7 +54,7 @@ namespace PSInzinerija1.Controllers
         [HttpGet("{game}")]
         public async Task<ActionResult<HighScoresEntry>> GetUserHighScoreAsync(AvailableGames game)
         {
-            var highScore = await highScoreService.GetUserHighScoreAsync(game, HttpContext.User);
+            var highScore = await _highScoreService.GetUserHighScoreAsync(game, HttpContext.User);
 
             return highScore == null ? NotFound() : Ok(highScore);
         }
@@ -61,7 +68,7 @@ namespace PSInzinerija1.Controllers
         [HttpPut("{game}")]
         public async Task<ActionResult> PutUserHighScore(AvailableGames game, [FromBody] int newHighScore)
         {
-            var success = await highScoreService.PutUserHighScoreAsync(game, newHighScore, HttpContext.User);
+            var success = await _highScoreService.PutUserHighScoreAsync(game, newHighScore, HttpContext.User);
 
             // TODO: pateikti detalesne informacija
             return success ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
@@ -75,7 +82,7 @@ namespace PSInzinerija1.Controllers
         [HttpDelete("{game}")]
         public async Task<ActionResult> DeleteUserHighScore(AvailableGames game)
         {
-            var success = await highScoreService.DeleteUserHighScoreAsync(game, HttpContext.User);
+            var success = await _highScoreService.DeleteUserHighScoreAsync(game, HttpContext.User);
 
             // TODO: pateikti detalesne informacija
             return success ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);

@@ -4,12 +4,11 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 
 
-using PSInzinerija1.Enums;
-using PSInzinerija1.Games.SimonSays.Models;
-// using PSInzinerija1.Shared.Data.Models;
+using Frontend.Games.SimonSays.Models;
 
 
-namespace PSInzinerija1.Games.SimonSays
+
+namespace Frontend.Games.SimonSays
 {
     public class SimonSaysManager : IGameManager
     {
@@ -91,8 +90,8 @@ namespace PSInzinerija1.Games.SimonSays
             foreach (int index in Sequence)
             {
                 var button = Buttons[index - 1];
-                int levelBasedDelay = Math.Max(200 - (Level * 10), 50);
-                int levelBasedFlash = Math.Max(400 - (Level * 20), 100);
+                int levelBasedDelay = Math.Max(200 - Level * 10, 50);
+                int levelBasedFlash = Math.Max(400 - Level * 20, 100);
                 await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration: levelBasedFlash);
             }
             IsShowingSequence = false;
