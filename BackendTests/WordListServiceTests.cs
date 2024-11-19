@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+
 using PSInzinerija1.Services;
+
 using Xunit;
 
 public class WordListServiceTests
