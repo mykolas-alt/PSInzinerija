@@ -27,11 +27,9 @@ public class WordListControllerTests
     private async Task CreateFileWithWordsAsync(string fileName, string content)
     {
         var filePath = Path.Combine(_testDirectory, fileName);
-        using (var writer = new StreamWriter(filePath))
-        {
-            await writer.WriteLineAsync(content);
-        }
+        await File.WriteAllTextAsync(filePath, content);
     }
+
 
     private void CleanUpFile(string fileName)
     {
@@ -45,7 +43,7 @@ public class WordListControllerTests
     [Fact]
     public async Task GetWordsFromFileAsync_ShouldReturnOkResult_WhenWordsFound()
     {
-        var fileName = "testfile_" + System.Guid.NewGuid() + ".txt";
+        var fileName = "testfile.txt";
         var words = "apple banana cherry";
         await CreateFileWithWordsAsync(fileName, words);
         var result = await _controller.GetWordsFromFileAsync(fileName);
@@ -73,7 +71,7 @@ public class WordListControllerTests
     [Fact]
     public async Task GetWordsFromFileAsync_ShouldReturnNotFound_WhenNoWordsFound()
     {
-        var fileName = "emptyfile_" + System.Guid.NewGuid() + ".txt";
+        var fileName = "emptyfile.txt";
         await CreateFileWithWordsAsync(fileName, string.Empty);
         var result = await _controller.GetWordsFromFileAsync(fileName);
         var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
