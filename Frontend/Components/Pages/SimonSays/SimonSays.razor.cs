@@ -23,6 +23,7 @@ namespace Frontend.Components.Pages.SimonSays
         StatsAPIService<SimonSaysStats> StatsAPIService { get; set; }
         // [Inject]
         // GameStatsService<SimonSaysStats> GameStatsService;
+        [Inject]
         ILogger<SimonSays> Logger { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
@@ -57,6 +58,7 @@ namespace Frontend.Components.Pages.SimonSays
             if (firstRender)
             {
                 await FetchDataAsync();
+                await FetchStatsAsync();
             }
         }
 
@@ -105,7 +107,7 @@ namespace Frontend.Components.Pages.SimonSays
         private async Task FetchStatsAsync()
         {
             var stats = await StatsAPIService.GetStatsAsync(AvailableGames.SimonSays);
-            if (stats != null && stats.RecentScore != null)
+            if (stats != null)
             {
                 gameManager.RecentScore = stats.RecentScore;
                 gameManager.TimePlayed = stats.TimePlayed;

@@ -20,6 +20,7 @@ namespace Frontend.Components.Pages.VisualMemory
         ProtectedSessionStorage SessionStorage { get; set; }
         [Inject]
         StatsAPIService<VisualMemoryStats> StatsAPIService { get; set; }
+        [Inject]
         ILogger<VisualMemory> Logger { get; set; }
         VisualMemoryManager Manager { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -30,7 +31,7 @@ namespace Frontend.Components.Pages.VisualMemory
             Manager.OnStatisticsChanged += async () =>
             {
                 await SaveToDB(Manager);
-                // await SaveStatsToDB(Manager);
+                await SaveStatsToDB(Manager);
                 await SessionStorage.SaveStateSessionStorage(Manager);
             };
 
@@ -44,6 +45,7 @@ namespace Frontend.Components.Pages.VisualMemory
                 await FetchDataAsync();
                 await FetchStatsAsync();
             }
+            
         }
 
         // TODO: iskelti kitur

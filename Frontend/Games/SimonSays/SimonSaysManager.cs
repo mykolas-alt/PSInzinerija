@@ -33,25 +33,9 @@ namespace Frontend.Games.SimonSays
 
         public int RecentScore { get; set; } = 0;
         public TimeSpan TimePlayed;
-        private readonly Stopwatch timer = new Stopwatch();
-
-
-        // public string SerializedStatistics
-        // {
-        //     get
-        //     {
-        //         var specificStats = new SimonSaysStats { TimePlayed = TimePlayed };
-        //         var gameStats = new GameStats<SimonSaysStats>(specificStats)
-        //         {
-        //             HighScore = HighScore,
-        //             RecentScores = RecentScores
-        //         };
-
-        //         var json = JsonSerializer.Serialize(gameStats);
-
-        //         return json.ToString();
-        //     }
-        // }
+        public Stopwatch Timer = new Stopwatch();
+        
+        
         public string SerializedStatistics
         {
             get
@@ -79,8 +63,8 @@ namespace Frontend.Games.SimonSays
             Sequence.Clear();
             PlayerInput.Clear();
             GameOver = false;
+            Timer.Start();
             await GenerateSequence();
-            timer.Start();
         }
 
         private async Task GenerateSequence()
@@ -91,7 +75,7 @@ namespace Frontend.Games.SimonSays
 
         private async Task ShowSequence()
         {
-            timer.Stop();
+            
             IsShowingSequence = true;
 
             foreach (int index in Sequence)
@@ -102,7 +86,7 @@ namespace Frontend.Games.SimonSays
                 await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration: levelBasedFlash);
             }
             IsShowingSequence = false;
-            timer.Start();
+            
         }
 
         public async Task HandleTileClick(int tileIndex)
@@ -114,8 +98,9 @@ namespace Frontend.Games.SimonSays
 
             if (!IsInputCorrect())
             {
-                timer.Stop();
-                TimeSpan timeTaken = timer.Elapsed;
+                
+                Timer.Stop();
+                TimePlayed = Timer.Elapsed;
                 RecentScore = Level;
                 if (Level > HighScore)
                 {
