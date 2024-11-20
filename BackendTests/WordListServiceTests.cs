@@ -1,10 +1,6 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
-using PSInzinerija1.Services;
+using Backend.Services;
 
-using Xunit;
 
 public class WordListServiceTests
 {

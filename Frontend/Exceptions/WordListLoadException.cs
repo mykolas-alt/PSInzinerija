@@ -1,6 +1,5 @@
-using System;
 
-namespace PSInzinerija1.Exceptions
+namespace Frontend.Exceptions
 {
     public class WordListLoadException : Exception
     {

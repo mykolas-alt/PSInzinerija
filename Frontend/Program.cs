@@ -1,5 +1,6 @@
 using Frontend.Components;
 using Frontend.Services;
+using PSInzinerija1.Shared.Data.Models.Stats;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -22,6 +23,8 @@ builder.Services.AddHeaderPropagation(options =>
 builder.Services.AddScoped<HighScoreAPIService>();
 builder.Services.AddScoped<WordListAPIService>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
+builder.Services.AddScoped<StatsAPIService<VisualMemoryStats>>();
+builder.Services.AddScoped<StatsAPIService<SimonSaysStats>>();
 
 builder.Services.AddCascadingAuthenticationState();
 

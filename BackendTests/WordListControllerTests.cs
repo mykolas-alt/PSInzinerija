@@ -1,13 +1,7 @@
+using Backend.Controllers;
+using Backend.Services;
+
 using Microsoft.AspNetCore.Mvc;
-
-using PSInzinerija1.Controllers;
-using PSInzinerija1.Services;
-
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-using Xunit;
 
 public class WordListControllerTests
 {

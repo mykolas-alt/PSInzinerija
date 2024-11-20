@@ -1,5 +1,5 @@
-using PSInzinerija1.Games.VisualMemory.Models;
-using Xunit;
+
+using Frontend.Games.VisualMemory.Models;
 
 namespace FrontendTests
 {

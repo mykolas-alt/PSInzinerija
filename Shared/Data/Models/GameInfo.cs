@@ -1,4 +1,4 @@
-namespace PSInzinerija1.Shared.Data.Models
+namespace Shared.Data.Models
 {
     public struct GameInfo
     {

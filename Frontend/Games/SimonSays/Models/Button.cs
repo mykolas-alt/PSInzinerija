@@ -1,5 +1,4 @@
-
-namespace PSInzinerija1.Games.SimonSays.Models
+namespace Frontend.Games.SimonSays.Models
 {
     public class Button
     {
@@ -11,9 +10,9 @@ namespace PSInzinerija1.Games.SimonSays.Models
 
         public Button(string buttonText, int index, SimonSaysManager game)
         {
-            Text = buttonText;
+            Text = buttonText ?? throw new ArgumentNullException(nameof(buttonText));
             Index = index;
-            gameInstance = game;
+            gameInstance = game ?? throw new ArgumentNullException(nameof(game));
         }
 
         public async Task OnClick(Action buttonPressed)

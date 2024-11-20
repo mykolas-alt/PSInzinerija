@@ -1,10 +1,5 @@
-using System.Text.Json;
-using Xunit;
-using Moq;
-using PSInzinerija1.Games.SimonSays;
-using PSInzinerija1.Games.SimonSays.Models;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+
+using Frontend.Games.SimonSays;
 
 namespace FrontendTests
 {
@@ -32,7 +27,7 @@ namespace FrontendTests
         public async Task HandleTileClick_AddsToPlayerInputAndHandlesCorrectly()
         {
             await _manager.StartNewGame();
-            var correctTile = _manager.Sequence[0]-1;
+            var correctTile = _manager.Sequence[0] - 1;
 
             await _manager.HandleTileClick(correctTile);
 

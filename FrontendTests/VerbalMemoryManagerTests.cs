@@ -1,9 +1,6 @@
 using System.Text.Json;
 
-using PSInzinerija1.Games.VerbalMemory;
-
-using Xunit;
-
+using Frontend.Games.VerbalMemory;
 
 public class VerbalMemoryManagerTests
 {

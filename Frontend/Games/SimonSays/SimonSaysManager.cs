@@ -1,10 +1,12 @@
-using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json;
+using System.Diagnostics;
 
-using PSInzinerija1.Enums;
-using PSInzinerija1.Games.SimonSays.Models;
 
-namespace PSInzinerija1.Games.SimonSays
+using Frontend.Games.SimonSays.Models;
+using Shared.Enums;
+
+namespace Frontend.Games.SimonSays
 {
     public class SimonSaysManager : IGameManager
     {
@@ -18,11 +20,17 @@ namespace PSInzinerija1.Games.SimonSays
         private readonly Random rand = new Random();
 
         public event Action? OnStatisticsChanged;
+        public event Action? OnScoreChanged;
 
         public Action? OnStateChanged { get; set; }
         public bool IsDisabled { get; set; } = false;
 
         public AvailableGames GameID => AvailableGames.SimonSays;
+
+        public int RecentScore { get; set; } = 0;
+        public TimeSpan TimePlayed;
+        public Stopwatch Timer = new Stopwatch();
+
 
         public string SerializedStatistics
         {
@@ -51,6 +59,7 @@ namespace PSInzinerija1.Games.SimonSays
             Sequence.Clear();
             PlayerInput.Clear();
             GameOver = false;
+            Timer.Start();
             await GenerateSequence();
         }
 
@@ -62,16 +71,18 @@ namespace PSInzinerija1.Games.SimonSays
 
         private async Task ShowSequence()
         {
+
             IsShowingSequence = true;
 
             foreach (int index in Sequence)
             {
                 var button = Buttons[index - 1];
-                int levelBasedDelay = Math.Max(200 - (Level * 10), 50);
-                int levelBasedFlash = Math.Max(400 - (Level * 20), 100);
+                int levelBasedDelay = Math.Max(200 - Level * 10, 50);
+                int levelBasedFlash = Math.Max(400 - Level * 20, 100);
                 await button.FlashButton(OnStateChanged, delayBeforeFlash: levelBasedDelay, duration: levelBasedFlash);
             }
             IsShowingSequence = false;
+
         }
 
         public async Task HandleTileClick(int tileIndex)
@@ -83,11 +94,18 @@ namespace PSInzinerija1.Games.SimonSays
 
             if (!IsInputCorrect())
             {
+
+                Timer.Stop();
+                TimePlayed = Timer.Elapsed;
+                RecentScore = Level;
+                OnScoreChanged?.Invoke();
                 if (Level > HighScore)
                 {
                     HighScore = Level;
                     OnStatisticsChanged?.Invoke();
                 }
+
+
                 GameOver = true;
                 Level = 0;
                 IsDisabled = false;
@@ -96,7 +114,9 @@ namespace PSInzinerija1.Games.SimonSays
 
             if (PlayerInput.Count == Sequence.Count)
             {
+
                 Level++;
+                RecentScore = Level;
                 await Task.Delay(200);
                 PlayerInput.Clear();
                 await GenerateSequence();

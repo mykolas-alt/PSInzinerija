@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
-using PSInzinerija1.Shared.Data.Models;
-using PSInzinerija1.Enums;
 using Microsoft.Extensions.Logging;
-using Xunit;
 using Frontend.Services;
+using Shared.Enums;
 
 namespace FrontendTests
 {
@@ -102,7 +94,7 @@ namespace FrontendTests
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ThrowsAsync(new HttpRequestException("Request error"));
-            
+
             return new HttpClient(mockHttpMessageHandler.Object);
         }
     }

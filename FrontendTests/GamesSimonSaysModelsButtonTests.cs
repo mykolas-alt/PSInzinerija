@@ -1,9 +1,7 @@
-using System;
-using System.Threading.Tasks;
+using Frontend.Games.SimonSays;
+using Frontend.Games.SimonSays.Models;
+
 using Moq;
-using Xunit;
-using PSInzinerija1.Games.SimonSays;
-using PSInzinerija1.Games.SimonSays.Models;
 
 namespace FrontendTests
 {

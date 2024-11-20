@@ -1,14 +1,12 @@
-using PSInzinerija1.Games.SimonSays;
-using PSInzinerija1.Games.SimonSays.Models;
-
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Authentication;
-using PSInzinerija1.Games;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using PSInzinerija1.Enums;
-using PSInzinerija1.Extensions;
-using PSInzinerija1.Shared.Data.Models;
+using Shared.Enums;
 using Frontend.Services;
+using Frontend.Games.SimonSays;
+using Frontend.Games;
+using Frontend.Extensions;
+using PSInzinerija1.Shared.Data.Models.Stats;
+using Shared.Data.Models;
 
 namespace Frontend.Components.Pages.SimonSays
 {
@@ -19,6 +17,12 @@ namespace Frontend.Components.Pages.SimonSays
         HighScoreAPIService HighScoreAPIService { get; set; }
         [Inject]
         ProtectedSessionStorage SessionStorage { get; set; }
+        [Inject]
+        StatsAPIService<SimonSaysStats> StatsAPIService { get; set; }
+        // [Inject]
+        // GameStatsService<SimonSaysStats> GameStatsService;
+        [Inject]
+        ILogger<SimonSays> Logger { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         private readonly SimonSaysManager gameManager = new();
@@ -26,6 +30,7 @@ namespace Frontend.Components.Pages.SimonSays
         // public GameRulesAPIService GameRulesService { get; set; } = null!;
 
         GameInfo? gameInfo = null;
+        private bool isLoading = true;
 
         protected override async Task OnInitializedAsync()
         {
@@ -34,10 +39,19 @@ namespace Frontend.Components.Pages.SimonSays
             gameManager.OnStatisticsChanged += async () =>
             {
                 await SaveToDB(gameManager);
+                await SaveStatsToDB(gameManager);
                 await SessionStorage.SaveStateSessionStorage(gameManager);
+            };
+            gameManager.OnScoreChanged += async () =>
+            {
+                await SaveStatsToDB(gameManager);
+                StateHasChanged();
             };
 
             // gameInfo = await GameRulesService.GetGameRulesAsync();
+            // {var userId = "user123"; // You'll need to replace this with a real user ID retrieval method
+            // stats = await GameStatsService.GetStatsAsync(userId, AvailableGames.SimonSays);
+            // isLoading = false;} //pakeist i actual user id
 #pragma warning restore CS8600
             //await gameManager.StartNewGame();
         }
@@ -47,6 +61,7 @@ namespace Frontend.Components.Pages.SimonSays
             if (firstRender)
             {
                 await FetchDataAsync();
+                await FetchStatsAsync();
             }
         }
 
@@ -56,15 +71,14 @@ namespace Frontend.Components.Pages.SimonSays
         {
             var highScore = gameManager.HighScore;
             var res = await HighScoreAPIService.SaveHighScoreToDbAsync(iGameManager.GameID, highScore);
-
-            Console.WriteLine(res ? "Saved to database." : "Failed to save to database.");
+            Logger.LogInformation(res ? "Saved to database." : "Failed to save to database.");
         }
 
         private async Task DeleteHS(IGameManager gameManager)
         {
             var res = await HighScoreAPIService.DeleteFromDbAsync(gameManager.GameID);
 
-            Console.WriteLine(res ? "Deleted successfully" : "Failed to delete");
+            Logger.LogInformation(res ? "Deleted successfully" : "Failed to delete");
         }
 
         private async Task FetchDataAsync()
@@ -73,12 +87,34 @@ namespace Frontend.Components.Pages.SimonSays
             if (res != null)
             {
                 gameManager.SetHighScore(res.Value);
-                Console.WriteLine("Loaded from database.");
+                Logger.LogInformation("Loaded from database.");
             }
             else
             {
                 await SessionStorage.LoadFromSessionStorage(gameManager);
-                Console.WriteLine("Loaded from session storage.");
+                Logger.LogInformation("Loaded from session storage.");
+            }
+            StateHasChanged();
+        }
+
+        private async Task SaveStatsToDB(SimonSaysManager gameManager)
+        {
+            var stats = new SimonSaysStats
+            {
+                RecentScore = gameManager.Level,
+                TimePlayed = gameManager.TimePlayed
+            };
+            await StatsAPIService.SaveStatsAsync(AvailableGames.SimonSays, stats);
+        }
+
+        private async Task FetchStatsAsync()
+        {
+            var stats = await StatsAPIService.GetStatsAsync(AvailableGames.SimonSays);
+            if (stats != null)
+            {
+                gameManager.RecentScore = stats.RecentScore;
+                gameManager.TimePlayed = stats.TimePlayed;
+                Logger.LogInformation("Loaded from database.");
             }
             StateHasChanged();
         }

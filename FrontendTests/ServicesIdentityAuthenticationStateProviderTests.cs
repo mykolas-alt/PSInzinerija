@@ -7,6 +7,7 @@ using Moq.Protected;
 using Xunit;
 using PSInzinerija1.Shared.Data.Models;
 using Frontend.Services;
+using Shared.Data.Models;
 
 namespace FrontendTests
 {

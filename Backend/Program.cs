@@ -1,18 +1,17 @@
 using System.Reflection;
 
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using PSInzinerija1.Data.ApplicationDbContext;
-using PSInzinerija1.Services;
-using PSInzinerija1.Data.Models;
-using PSInzinerija1.Filters;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
-using PSInzinerija1.Shared.Data.Models;
-
+using Backend.Filters;
+using Backend.Data.ApplicationDbContext;
+using Backend.Data.Models;
+using Backend.Services;
+using PSInzinerija1.Shared.Data.Models.Stats;
+using Shared.Data.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -41,6 +40,8 @@ builder.Services.AddTransient<HighScoreService>();
 builder.Services.AddSingleton<APITrackingService>();
 builder.Services.AddScoped<APIHitCountFilter>();
 builder.Services.AddScoped<WordListService>();
+builder.Services.AddScoped<GameStatsService<VisualMemoryStats>>();
+builder.Services.AddScoped<GameStatsService<SimonSaysStats>>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();

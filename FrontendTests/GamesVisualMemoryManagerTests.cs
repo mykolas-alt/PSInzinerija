@@ -1,7 +1,7 @@
-using PSInzinerija1.Games.VisualMemory;
-using PSInzinerija1.Games.VisualMemory.Models;
-using Xunit;
 using System.Text.Json;
+
+using Frontend.Games.VisualMemory;
+using Frontend.Games.VisualMemory.Models;
 
 namespace FrontendTests
 {
@@ -15,7 +15,7 @@ namespace FrontendTests
 
             string json = manager.SerializedStatistics;
 
-            var expectedJson = JsonSerializer.Serialize(new VisualMemoryManager.VisualMemoryStats(10));
+            var expectedJson = JsonSerializer.Serialize(new VisualMemoryManager.VisualMemoryHighScore(10));
             Assert.Equal(expectedJson, json);
         }
 
@@ -37,7 +37,7 @@ namespace FrontendTests
         public void LoadStatisticsFromJSON_UpdatesHighScoreFromValidJSON()
         {
             var manager = new VisualMemoryManager();
-            var json = JsonSerializer.Serialize(new VisualMemoryManager.VisualMemoryStats(20));
+            var json = JsonSerializer.Serialize(new VisualMemoryManager.VisualMemoryHighScore(20));
 
             manager.LoadStatisticsFromJSON(json);
 

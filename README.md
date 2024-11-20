@@ -13,12 +13,12 @@ Web application, kuriame galima žaisti įvairius kognityvinius gebėjimus lavin
 - [x] Progreso išsaugojimas su prisijungimu
 - [x] Leaderboard ir aukščiausių rezultatų duomenų bazė
 - [x] Svečio prieiga
-- [ ] Žaidimo logikos dalis vykdoma serveryje, front-end tik UI
+- [x] Žaidimo logikos dalis vykdoma serveryje, front-end tik UI
 - [ ] Žaidimo pasirinkimas pagrindiniame puslapyje
 
 ## Žaidimai
 - [ ] Chimp Test (atmintis atkartojant langelių seką)
-- [ ] Verbal Memory (matytų žodžių prisiminimas)
+- [x] Verbal Memory (matytų žodžių prisiminimas)
 - [ ] Aim Trainer (greitumas ir tikslumas paspaudžiant taikinius)
 - [ ] Number Memory (kuo ilgesnio skaičiaus prisiminimas)
 - [ ] Falling Word Typing Game (suspėti surašyti žodžius kurie krenta iki apačios)
