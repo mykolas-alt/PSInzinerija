@@ -1,12 +1,17 @@
+using Backend.Services;
+
 using Microsoft.AspNetCore.Mvc.Filters;
 
-using PSInzinerija1.Services;
-
-namespace PSInzinerija1.Filters
+namespace Backend.Filters
 {
-    public class APIHitCountFilter(APITrackingService hitCounterService) : IActionFilter
+    public class APIHitCountFilter : IActionFilter
     {
-        private readonly APITrackingService _hitCounterService = hitCounterService;
+        private readonly APITrackingService _hitCounterService;
+
+        public APIHitCountFilter(APITrackingService hitCounterService)
+        {
+            _hitCounterService = hitCounterService ?? throw new ArgumentNullException(nameof(hitCounterService));
+        }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {

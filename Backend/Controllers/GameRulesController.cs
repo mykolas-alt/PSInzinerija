@@ -1,21 +1,21 @@
+using Backend.Services;
+
 using Microsoft.AspNetCore.Mvc;
 
-using PSInzinerija1.Services;
 using PSInzinerija1.Shared.Data.Models;
 
 
-namespace PSInzinerija1.Controllers
+namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class GameRulesController : ControllerBase
     {
+        private readonly GameRulesService _gameRulesService;
 
-        private readonly GameRulesAPIService _gameRulesService;
-
-        public GameRulesController(GameRulesAPIService gameRulesService)
+        public GameRulesController(GameRulesService gameRulesService)
         {
-            _gameRulesService = gameRulesService;
+            _gameRulesService = gameRulesService ?? throw new ArgumentNullException(nameof(gameRulesService));
         }
 
         [HttpGet]

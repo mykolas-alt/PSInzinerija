@@ -13,8 +13,8 @@ namespace Frontend.Services
 
         public IdentityAuthenticationStateProvider(IHttpClientFactory httpClientFactory, ILogger<IdentityAuthenticationStateProvider> logger)
         {
-            _httpClient = httpClientFactory.CreateClient("BackendApi");
-            _logger = logger;
+            _httpClient = httpClientFactory?.CreateClient("BackendApi") ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()

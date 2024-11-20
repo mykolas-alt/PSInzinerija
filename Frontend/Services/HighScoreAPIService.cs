@@ -7,9 +7,16 @@ using System.Text.Json.Nodes;
 
 namespace Frontend.Services
 {
-    public class HighScoreAPIService(IHttpClientFactory httpClientFactory, ILogger<HighScoreAPIService> logger)
+    public class HighScoreAPIService
     {
-        private readonly HttpClient _httpClient = httpClientFactory.CreateClient("BackendApi");
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<HighScoreAPIService> _logger;
+
+        public HighScoreAPIService(IHttpClientFactory httpClientFactory, ILogger<HighScoreAPIService> logger)
+        {
+            _httpClient = httpClientFactory?.CreateClient("BackendApi") ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         public async Task<List<LeaderboardEntry>> GetLeaderboardEntriesAsync(AvailableGames game)
         {
@@ -22,7 +29,7 @@ namespace Frontend.Services
             }
             catch (Exception e)
             {
-                logger.LogError($"Request error: {e.Message}");
+                _logger.LogError("Request error: {errorMessage}", e.Message);
                 return [];  // Return empty list in case of error
             }
 
@@ -47,7 +54,7 @@ namespace Frontend.Services
             }
             catch (Exception e)
             {
-                logger.LogError($"Request error: {e.Message}");
+                _logger.LogError("Request error: {errorMessage}", e.Message);
             }
 
             return null;
@@ -62,7 +69,7 @@ namespace Frontend.Services
             }
             catch (Exception e)
             {
-                logger.LogError($"Request error: {e.Message}");
+                _logger.LogError("Request error: {errorMessage}", e.Message);
             }
 
             return false;
@@ -79,7 +86,7 @@ namespace Frontend.Services
             }
             catch (Exception e)
             {
-                logger.LogError($"Request error: {e.Message}");
+                _logger.LogError("Request error: {errorMessage}", e.Message);
             }
 
             return false;
