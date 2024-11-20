@@ -5,6 +5,7 @@ using Backend.Filters;
 using Backend.Data.Models;
 using Backend.Services;
 using Shared.Data.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Controllers
 {
@@ -14,10 +15,12 @@ namespace Backend.Controllers
     public class HighScoresController : ControllerBase
     {
         private readonly HighScoreService _highScoreService;
+        private readonly UserManager<User> _userManager;
 
-        public HighScoresController(HighScoreService highScoreService)
+        public HighScoresController(HighScoreService highScoreService, UserManager<User> userManager)
         {
             _highScoreService = highScoreService ?? throw new ArgumentNullException(nameof(highScoreService));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         /// <summary>
@@ -54,7 +57,12 @@ namespace Backend.Controllers
         [HttpGet("{game}")]
         public async Task<ActionResult<HighScoresEntry>> GetUserHighScoreAsync(AvailableGames game)
         {
-            var highScore = await _highScoreService.GetUserHighScoreAsync(game, HttpContext.User);
+            string? id = _userManager.GetUserId(HttpContext.User);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var highScore = await _highScoreService.GetUserHighScoreAsync(game, id);
 
             return highScore == null ? NotFound() : Ok(highScore);
         }
@@ -68,7 +76,12 @@ namespace Backend.Controllers
         [HttpPut("{game}")]
         public async Task<ActionResult> PutUserHighScore(AvailableGames game, [FromBody] int newHighScore)
         {
-            var success = await _highScoreService.PutUserHighScoreAsync(game, newHighScore, HttpContext.User);
+            string? id = _userManager.GetUserId(HttpContext.User);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var success = await _highScoreService.PutUserHighScoreAsync(game, newHighScore, id);
 
             // TODO: pateikti detalesne informacija
             return success ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
@@ -82,7 +95,12 @@ namespace Backend.Controllers
         [HttpDelete("{game}")]
         public async Task<ActionResult> DeleteUserHighScore(AvailableGames game)
         {
-            var success = await _highScoreService.DeleteUserHighScoreAsync(game, HttpContext.User);
+            string? id = _userManager.GetUserId(HttpContext.User);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var success = await _highScoreService.DeleteUserHighScoreAsync(game, id);
 
             // TODO: pateikti detalesne informacija
             return success ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);

@@ -14,13 +14,11 @@ namespace Backend.Services
     public class HighScoreService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
         private readonly ILogger<HighScoreService> _logger;
 
-        public HighScoreService(ApplicationDbContext context, UserManager<User> userManager, ILogger<HighScoreService> logger)
+        public HighScoreService(ApplicationDbContext context, ILogger<HighScoreService> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -60,9 +58,9 @@ namespace Backend.Services
             return null;
         }
 
-        public async Task<HighScoresEntry?> GetUserHighScoreAsync(AvailableGames game, ClaimsPrincipal claims)
+        public async Task<HighScoresEntry?> GetUserHighScoreAsync(AvailableGames game, string id)
         {
-            var user_id = _userManager.GetUserId(claims);
+            var user_id = id;
 
             if (user_id == null)
             {
@@ -85,9 +83,9 @@ namespace Backend.Services
             return null;
         }
 
-        public async Task<bool> PutUserHighScoreAsync(AvailableGames game, int newHighScore, ClaimsPrincipal claims)
+        public async Task<bool> PutUserHighScoreAsync(AvailableGames game, int newHighScore, string id)
         {
-            var user_id = _userManager.GetUserId(claims);
+            var user_id = id;
             if (user_id == null)
             {
                 return false;
@@ -123,9 +121,9 @@ namespace Backend.Services
             return true;
         }
 
-        public async Task<bool> DeleteUserHighScoreAsync(AvailableGames game, ClaimsPrincipal claims)
+        public async Task<bool> DeleteUserHighScoreAsync(AvailableGames game, string id)
         {
-            var user_id = _userManager.GetUserId(claims);
+            var user_id = id;
             var todoItem = await _context.HighScores.FindAsync(user_id, game);
             if (todoItem == null)
             {

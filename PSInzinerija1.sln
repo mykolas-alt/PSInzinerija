@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontendTests", "FrontendTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{3ACA3B08-BA0C-43F7-B254-43A05FB504DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendTests.Integration", "BackendTests.Integration\BackendTests.Integration.csproj", "{7F171A54-FCCA-4113-BCF6-ED436B3EF111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{3ACA3B08-BA0C-43F7-B254-43A05FB504DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ACA3B08-BA0C-43F7-B254-43A05FB504DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ACA3B08-BA0C-43F7-B254-43A05FB504DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F171A54-FCCA-4113-BCF6-ED436B3EF111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F171A54-FCCA-4113-BCF6-ED436B3EF111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F171A54-FCCA-4113-BCF6-ED436B3EF111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F171A54-FCCA-4113-BCF6-ED436B3EF111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -142,3 +142,5 @@ app.MapGet("/user/info", async Task<Results<Ok<UserInfo>, ValidationProblem, Not
 
 
 app.Run();
+
+public partial class Program { }
