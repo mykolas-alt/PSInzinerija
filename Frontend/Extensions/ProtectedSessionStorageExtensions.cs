@@ -1,8 +1,8 @@
-using Frontend.Games;
-
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
-namespace Frontend.Extensions
+using PSInzinerija1.Games;
+
+namespace PSInzinerija1.Extensions
 {
     public static class ProtectedSessionStorageExtensions
     {

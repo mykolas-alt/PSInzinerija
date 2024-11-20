@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Frontend.Games.VisualMemory.Models
+namespace PSInzinerija1.Games.VisualMemory.Models
 {
     public enum PatternValue
     {

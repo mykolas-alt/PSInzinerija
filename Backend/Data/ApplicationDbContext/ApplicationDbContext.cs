@@ -1,9 +1,9 @@
-﻿using Backend.Data.Models;
-
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Data.ApplicationDbContext
+using PSInzinerija1.Data.Models;
+
+namespace PSInzinerija1.Data.ApplicationDbContext
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User>(options)
     {

@@ -1,35 +1,23 @@
 ﻿using System.Security.Claims;
 
-using Backend.Data.ApplicationDbContext;
-using Backend.Data.Models;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+using PSInzinerija1.Data.ApplicationDbContext;
+using PSInzinerija1.Data.Models;
 using PSInzinerija1.Enums;
 using PSInzinerija1.Shared.Data.Models;
 
-namespace Backend.Services
+namespace PSInzinerija1.Services
 {
-    public class HighScoreService
+    public class HighScoreService(ApplicationDbContext context, UserManager<User> userManager)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
-        private readonly ILogger<HighScoreService> _logger;
-
-        public HighScoreService(ApplicationDbContext context, UserManager<User> userManager, ILogger<HighScoreService> logger)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
         public async Task<List<LeaderboardEntry>?> GetGameHighScoresAsync(AvailableGames game)
         {
             try
             {
-                var query = from a in _context.HighScores.Where(e => e.GameId == game)
-                            join b in _context.Users
+                var query = from a in context.HighScores.Where(e => e.GameId == game)
+                            join b in context.Users
                                 on a.Id equals b.Id
                             orderby a.HighScore descending
                             select new LeaderboardEntry(b.UserName ?? "Anon", a.HighScore, a.RecordDate);
@@ -40,7 +28,7 @@ namespace Backend.Services
             }
             catch (Exception e) when (e is OperationCanceledException || e is ArgumentNullException)
             {
-                _logger.LogError("{error}", e.Message);
+                Console.WriteLine(e.Message);
             }
 
             return null;
@@ -50,11 +38,11 @@ namespace Backend.Services
         {
             try
             {
-                return await _context.HighScores.OrderByDescending(e => e.HighScore).ToListAsync();
+                return await context.HighScores.OrderByDescending(e => e.HighScore).ToListAsync();
             }
             catch (Exception e) when (e is OperationCanceledException || e is ArgumentNullException)
             {
-                _logger.LogError("{error}", e.Message);
+                Console.WriteLine(e.Message);
             }
 
             return null;
@@ -62,7 +50,7 @@ namespace Backend.Services
 
         public async Task<HighScoresEntry?> GetUserHighScoreAsync(AvailableGames game, ClaimsPrincipal claims)
         {
-            var user_id = _userManager.GetUserId(claims);
+            var user_id = userManager.GetUserId(claims);
 
             if (user_id == null)
             {
@@ -71,7 +59,7 @@ namespace Backend.Services
 
             try
             {
-                var todoItem = await _context.HighScores
+                var todoItem = await context.HighScores
                     .Where(m => m.GameId == game && m.Id == user_id)
                     .SingleOrDefaultAsync();
 
@@ -79,7 +67,7 @@ namespace Backend.Services
             }
             catch (Exception e) when (e is OperationCanceledException || e is ArgumentNullException || e is InvalidOperationException)
             {
-                _logger.LogError("{error}", e.Message);
+                Console.WriteLine(e.Message);
             }
 
             return null;
@@ -87,7 +75,7 @@ namespace Backend.Services
 
         public async Task<bool> PutUserHighScoreAsync(AvailableGames game, int newHighScore, ClaimsPrincipal claims)
         {
-            var user_id = _userManager.GetUserId(claims);
+            var user_id = userManager.GetUserId(claims);
             if (user_id == null)
             {
                 return false;
@@ -105,18 +93,18 @@ namespace Backend.Services
             {
                 if (EntryExists(user_id, entry.GameId))
                 {
-                    _context.Entry(entry).State = EntityState.Modified;
+                    context.Entry(entry).State = EntityState.Modified;
                 }
                 else
                 {
-                    _context.Entry(entry).State = EntityState.Added;
+                    context.Entry(entry).State = EntityState.Added;
                 }
 
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                _logger.LogError("{error}", e.Message);
+                Console.WriteLine(e.Message);
                 return false;
             }
 
@@ -125,8 +113,8 @@ namespace Backend.Services
 
         public async Task<bool> DeleteUserHighScoreAsync(AvailableGames game, ClaimsPrincipal claims)
         {
-            var user_id = _userManager.GetUserId(claims);
-            var todoItem = await _context.HighScores.FindAsync(user_id, game);
+            var user_id = userManager.GetUserId(claims);
+            var todoItem = await context.HighScores.FindAsync(user_id, game);
             if (todoItem == null)
             {
                 return false;
@@ -134,12 +122,12 @@ namespace Backend.Services
 
             try
             {
-                _context.HighScores.Remove(todoItem);
-                await _context.SaveChangesAsync();
+                context.HighScores.Remove(todoItem);
+                await context.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                _logger.LogError("{error}", e.Message);
+                Console.WriteLine(e.Message);
                 return false;
             }
 
@@ -148,7 +136,7 @@ namespace Backend.Services
 
         private bool EntryExists(string id, AvailableGames gameId)
         {
-            return _context.HighScores.Any(e => e.GameId == gameId && e.Id == id);
+            return context.HighScores.Any(e => e.GameId == gameId && e.Id == id);
         }
     }
 }

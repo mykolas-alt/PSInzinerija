@@ -3,10 +3,11 @@ using System.Text;
 using PSInzinerija1.Enums;
 using PSInzinerija1.Shared.Data.Models;
 
-namespace Backend.Services
+namespace PSInzinerija1.Services
 {
-    public class GameRulesService
+    public class GameRulesAPIService(HttpClient httpClient)
     {
+
         public async Task<GameInfo> GetGameRulesAsync()
         {
             GameInfo gameInfo = new GameInfo
@@ -18,7 +19,7 @@ namespace Backend.Services
 
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "GameRules/SimonSaysRules.txt");
 
-            if (!File.Exists(filePath))
+            if (!System.IO.File.Exists(filePath))
             {
                 return gameInfo; //grazina tuscias taisykles
             }

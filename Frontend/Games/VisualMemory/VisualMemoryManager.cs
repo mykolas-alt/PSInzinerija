@@ -1,10 +1,9 @@
 using System.Text.Json;
 
-using Frontend.Games.VisualMemory.Models;
-
 using PSInzinerija1.Enums;
+using PSInzinerija1.Games.VisualMemory.Models;
 
-namespace Frontend.Games.VisualMemory
+namespace PSInzinerija1.Games.VisualMemory
 {
     public class VisualMemoryManager : IGameManager
     {

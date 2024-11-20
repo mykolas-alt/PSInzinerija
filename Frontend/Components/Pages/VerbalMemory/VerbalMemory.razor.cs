@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 using PSInzinerija1.Enums;
+using PSInzinerija1.Exceptions;
+using PSInzinerija1.Extensions;
+using PSInzinerija1.Games;
+using PSInzinerija1.Games.VerbalMemory;
 using Frontend.Services;
-using Frontend.Games.VerbalMemory;
-using Frontend.Games;
-using Frontend.Extensions;
-using Frontend.Exceptions;
 
 namespace Frontend.Components.Pages.VerbalMemory
 {
@@ -19,8 +19,6 @@ namespace Frontend.Components.Pages.VerbalMemory
         ProtectedSessionStorage SessionStorage { get; set; }
         [Inject]
         WordListAPIService WordListAPIService { get; set; }
-        [Inject]
-        ILogger<VerbalMemory> Logger { get; set; }
 
         VerbalMemoryManager Manager { get; set; } = new VerbalMemoryManager();
 
@@ -36,7 +34,7 @@ namespace Frontend.Components.Pages.VerbalMemory
             }
             catch (WordListLoadException ex)
             {
-                Logger.LogError("Error loading word list: {errorMessage}", ex.Message);
+                Console.WriteLine($"Error loading word list: {ex.Message}");
                 LoadFailed = true;
             }
 
@@ -65,14 +63,14 @@ namespace Frontend.Components.Pages.VerbalMemory
             var highScore = Manager.HighScore;
             var res = await HighScoreAPIService.SaveHighScoreToDbAsync(gameManager.GameID, highScore);
 
-            Logger.LogInformation(res ? "Saved to database." : "Failed to save to database.");
+            Console.WriteLine(res ? "Saved to database." : "Failed to save to database.");
         }
 
         private async Task DeleteHS(IGameManager gameManager)
         {
             var res = await HighScoreAPIService.DeleteFromDbAsync(gameManager.GameID);
 
-            Logger.LogInformation(res ? "Deleted successfully" : "Failed to delete");
+            Console.WriteLine(res ? "Deleted successfully" : "Failed to delete");
         }
 
         private async Task FetchDataAsync()
@@ -81,12 +79,12 @@ namespace Frontend.Components.Pages.VerbalMemory
             if (res != null)
             {
                 Manager.SetHighScore(res.Value);
-                Logger.LogInformation("Loaded from database.");
+                Console.WriteLine("Loaded from database.");
             }
             else
             {
                 await SessionStorage.LoadFromSessionStorage(Manager);
-                Logger.LogInformation("Loaded from session storage.");
+                Console.WriteLine("Loaded from session storage.");
             }
             StateHasChanged();
         }

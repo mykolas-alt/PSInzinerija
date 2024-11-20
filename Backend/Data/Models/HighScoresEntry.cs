@@ -4,19 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 using PSInzinerija1.Enums;
 
-namespace Backend.Data.Models
+namespace PSInzinerija1.Data.Models
 {
     [Table("high_scores")]
     [PrimaryKey(nameof(Id), nameof(GameId))]
     public class HighScoresEntry
     {
         [Column("user_id")]
-        public required string Id { get; set; } = default!;
+        public string Id { get; set; } = default!;
         [Column("high_score")]
-        public required int HighScore { get; set; }
+        public int HighScore { get; set; }
         [Column("game_id")]
-        public required AvailableGames GameId { get; set; }
+        public AvailableGames GameId { get; set; }
         [Column("record_date")]
-        public required DateTime RecordDate { get; set; }
+        public DateTime RecordDate { get; set; }
     }
 }

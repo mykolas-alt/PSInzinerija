@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-using Frontend.Exceptions;
+using PSInzinerija1.Exceptions;
 namespace Frontend.Services
 {
     public class WordListAPIService
@@ -9,7 +9,7 @@ namespace Frontend.Services
 
         public WordListAPIService(IHttpClientFactory clientFactory)
         {
-            _httpClient = clientFactory?.CreateClient("BackendApi") ?? throw new ArgumentNullException(nameof(clientFactory));
+            _httpClient = clientFactory.CreateClient("BackendApi");
         }
 
         public async Task<List<string>?> GetWordsFromApiAsync(string fileName)

@@ -1,11 +1,11 @@
-using Backend.Services;
-
 using Microsoft.AspNetCore.Mvc;
+
+using PSInzinerija1.Services;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Backend.Controllers
+namespace PSInzinerija1.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -15,7 +15,7 @@ namespace Backend.Controllers
 
         public WordListController(WordListService wordListService)
         {
-            _wordListService = wordListService ?? throw new ArgumentNullException(nameof(wordListService));
+            _wordListService = wordListService;
         }
 
         [HttpGet("words")]

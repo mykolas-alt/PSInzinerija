@@ -1,6 +1,6 @@
 using PSInzinerija1.Enums;
 
-namespace Frontend.Games
+namespace PSInzinerija1.Games
 {
     public interface IGameManager
     {

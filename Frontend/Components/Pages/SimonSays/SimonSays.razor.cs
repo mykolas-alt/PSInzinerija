@@ -1,11 +1,14 @@
+using PSInzinerija1.Games.SimonSays;
+using PSInzinerija1.Games.SimonSays.Models;
+
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Authentication;
+using PSInzinerija1.Games;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using PSInzinerija1.Enums;
+using PSInzinerija1.Extensions;
 using PSInzinerija1.Shared.Data.Models;
 using Frontend.Services;
-using Frontend.Games.SimonSays;
-using Frontend.Games;
-using Frontend.Extensions;
 
 namespace Frontend.Components.Pages.SimonSays
 {
@@ -16,8 +19,6 @@ namespace Frontend.Components.Pages.SimonSays
         HighScoreAPIService HighScoreAPIService { get; set; }
         [Inject]
         ProtectedSessionStorage SessionStorage { get; set; }
-        [Inject]
-        ILogger<SimonSays> Logger { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         private readonly SimonSaysManager gameManager = new();
@@ -56,14 +57,14 @@ namespace Frontend.Components.Pages.SimonSays
             var highScore = gameManager.HighScore;
             var res = await HighScoreAPIService.SaveHighScoreToDbAsync(iGameManager.GameID, highScore);
 
-            Logger.LogInformation(res ? "Saved to database." : "Failed to save to database.");
+            Console.WriteLine(res ? "Saved to database." : "Failed to save to database.");
         }
 
         private async Task DeleteHS(IGameManager gameManager)
         {
             var res = await HighScoreAPIService.DeleteFromDbAsync(gameManager.GameID);
 
-            Logger.LogInformation(res ? "Deleted successfully" : "Failed to delete");
+            Console.WriteLine(res ? "Deleted successfully" : "Failed to delete");
         }
 
         private async Task FetchDataAsync()
@@ -72,12 +73,12 @@ namespace Frontend.Components.Pages.SimonSays
             if (res != null)
             {
                 gameManager.SetHighScore(res.Value);
-                Logger.LogInformation("Loaded from database.");
+                Console.WriteLine("Loaded from database.");
             }
             else
             {
                 await SessionStorage.LoadFromSessionStorage(gameManager);
-                Logger.LogInformation("Loaded from session storage.");
+                Console.WriteLine("Loaded from session storage.");
             }
             StateHasChanged();
         }

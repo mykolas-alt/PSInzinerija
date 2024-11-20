@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text;
 
-namespace Backend.Services
+namespace PSInzinerija1.Services
 {
     public class APITrackingService
     {
@@ -11,14 +11,9 @@ namespace Backend.Services
 
         public APITrackingService(IHostApplicationLifetime applicationLifetime, ILogger<APITrackingService> logger)
         {
-            if (applicationLifetime == null)
-            {
-                throw new ArgumentNullException(nameof(applicationLifetime));
-            }
-
             _startTime = DateTime.Now;
             applicationLifetime.ApplicationStopped.Register(OnApplicationStopped);
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger;
         }
 
         public uint GetAPIHitCount(string endpoint)

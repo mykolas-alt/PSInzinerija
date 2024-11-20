@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Backend.Services
+namespace PSInzinerija1.Services
 {
     public class WordListService
     {
