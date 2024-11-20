@@ -86,11 +86,13 @@ namespace Backend.Services
         // Save Stats for a Specific User and Game
         public async Task SaveUserStatsAsync(AvailableGames gameId, ClaimsPrincipal user, T stats)
         {
+            _logger.LogInformation("Saving stats for game {gameId}", gameId);
             var userId = _userManager.GetUserId(user);
 
             if (userId == null)
             {
                 return;
+                _logger.LogError("User ID is null");
             }
             GameStatisticsEntry? entry = null;
             if (stats is VisualMemoryStats visualMemoryStats)
@@ -102,6 +104,7 @@ namespace Backend.Services
                     RecentScore = visualMemoryStats.RecentScore,
                     Mistakes = visualMemoryStats.GameMistakes
                 };
+                
             }
             else if (stats is SimonSaysStats simonSaysStats)
             {

@@ -56,7 +56,8 @@ namespace Frontend.Services
             try
             {
                 
-                var content = new StringContent(stats.ToString(), Encoding.UTF8, "application/json");
+                var json = JsonSerializer.Serialize(stats);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var result = await _httpClient.PostAsync(requestUri, content);
 

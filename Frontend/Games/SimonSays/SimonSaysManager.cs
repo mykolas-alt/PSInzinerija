@@ -25,6 +25,7 @@ namespace Frontend.Games.SimonSays
         private readonly Random rand = new Random();
 
         public event Action? OnStatisticsChanged;
+        public event Action? OnScoreChanged;
 
         public Action? OnStateChanged { get; set; }
         public bool IsDisabled { get; set; } = false;
@@ -102,6 +103,7 @@ namespace Frontend.Games.SimonSays
                 Timer.Stop();
                 TimePlayed = Timer.Elapsed;
                 RecentScore = Level;
+                OnScoreChanged?.Invoke();
                 if (Level > HighScore)
                 {
                     HighScore = Level;

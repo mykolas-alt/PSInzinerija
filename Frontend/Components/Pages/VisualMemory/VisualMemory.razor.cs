@@ -31,8 +31,12 @@ namespace Frontend.Components.Pages.VisualMemory
             Manager.OnStatisticsChanged += async () =>
             {
                 await SaveToDB(Manager);
-                await SaveStatsToDB(Manager);
                 await SessionStorage.SaveStateSessionStorage(Manager);
+            };
+            Manager.OnScoreChanged += async () =>
+            {
+                await SaveStatsToDB(Manager);
+                StateHasChanged();
             };
 
             await Manager.StartNewGame();
@@ -93,7 +97,7 @@ namespace Frontend.Components.Pages.VisualMemory
         private async Task FetchStatsAsync()
         {
             var stats = await StatsAPIService.GetStatsAsync(AvailableGames.VisualMemory);
-            if (stats != null && stats.RecentScore != null)
+            if (stats != null)
             {
                 Manager.RecentScore = stats.RecentScore;
                 Manager.GameMistakes = stats.GameMistakes;

@@ -5,6 +5,7 @@ using Frontend.Games.VisualMemory.Models;
 using Shared.Enums;
 using PSInzinerija1.Shared.Data.Models;
 using PSInzinerija1.Shared.Data.Models.Stats;
+using System.ComponentModel.DataAnnotations;
 
 namespace Frontend.Games.VisualMemory
 {
@@ -29,6 +30,7 @@ namespace Frontend.Games.VisualMemory
         }
 
         public event Action? OnStatisticsChanged;
+        public event Action? OnScoreChanged;
 
         private readonly int _roundStartDelay = 1500;
         private int _mistakeCount = 0;
@@ -83,6 +85,7 @@ namespace Frontend.Games.VisualMemory
             {
                 // game over
                 RecentScore = Score;
+                OnScoreChanged?.Invoke();
                 await StartNewGame();
 
             }
@@ -91,7 +94,6 @@ namespace Frontend.Games.VisualMemory
                 ResetRound();
                 await Advance();
             }
-
         }
 
         private void UpdateHighScore()

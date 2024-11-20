@@ -44,6 +44,11 @@ namespace Frontend.Components.Pages.SimonSays
                 await SaveStatsToDB(gameManager);
                 await SessionStorage.SaveStateSessionStorage(gameManager);
             };
+            gameManager.OnScoreChanged += async () =>
+            {
+                await SaveStatsToDB(gameManager);
+                StateHasChanged();
+            };
 
             // gameInfo = await GameRulesService.GetGameRulesAsync();
             // {var userId = "user123"; // You'll need to replace this with a real user ID retrieval method
