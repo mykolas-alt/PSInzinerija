@@ -8,7 +8,6 @@ public class UnitTest1
     public async Task GameRulesAPIService_ConstructorThrowsIfNullArgument()
     {
         var gameRulesAPIService = new GameRulesAPIService(null);
-
         var gameInfo = await gameRulesAPIService.GetGameRulesAsync();
 
         Assert.Empty(gameInfo.Rules);
