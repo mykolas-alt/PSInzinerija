@@ -1,33 +1,56 @@
 using System.Data.Common;
+using System.Security.Claims;
 
 using Backend.Data.ApplicationDbContext;
 using Backend.Data.Models;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+using Moq;
 
 
 
 public class CustomWebApplicationFactory<TProgram>
     : WebApplicationFactory<TProgram> where TProgram : class
 {
+    // public static readonly string TestEmail = "test@mailas.com";
+    // public static readonly string TestUserName = "testuser";
+    // public static readonly string TestPassword = "Abcd1!";
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Debug);
+        });
+
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddAuthentication("TestScheme").AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestScheme", options => { });
+        });
         builder.ConfigureServices(async services =>
         {
             var dbContextDescriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
 
-            services.Remove(dbContextDescriptor);
+            if (dbContextDescriptor != null)
+                services.Remove(dbContextDescriptor);
 
             var dbConnectionDescriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbConnection));
 
-            services.Remove(dbConnectionDescriptor);
+            if (dbConnectionDescriptor != null)
+                services.Remove(dbConnectionDescriptor);
 
             // Create open SqliteConnection so EF won't automatically close it.
             services.AddSingleton<DbConnection>(container =>
@@ -44,18 +67,35 @@ public class CustomWebApplicationFactory<TProgram>
                 options.UseSqlite(connection);
             });
 
-            using (var scope = services.BuildServiceProvider().CreateScope())
+            // var serviceProvider = services.BuildServiceProvider();
+            // using var scope = serviceProvider.CreateScope();
+            // var sp = scope.ServiceProvider;
+            // using var dbcontext = sp.GetRequiredService<ApplicationDbContext>();
+            // dbcontext?.Database.EnsureCreated();
+            // var userManager = sp.GetRequiredService<UserManager<User>>();
+            // var userStore = sp.GetRequiredService<IUserStore<User>>();
+            // var emailStore = (IUserEmailStore<User>)userStore;
+            // var email = TestEmail;
+            // var userName = TestUserName;
+            // var password = TestPassword;
+
+            // var user = new User();
+            // await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
+            // await emailStore.SetEmailAsync(user, email, CancellationToken.None);
+            // var result = await userManager.CreateAsync(user, password);
+
+
+            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(UserManager<User>));
+            if (descriptor != null)
             {
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                context.Database.EnsureCreated();
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                User user = new()
-                {
-                    Email = "testuser@mail.com",
-                    UserName = "TestUser"
-                };
-                await userManager.CreateAsync(user, "Abcd1!");
+                services.Remove(descriptor);
             }
+
+            var store = new Mock<IUserStore<User>>();
+            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("mock-user-id-1234");
+            services.AddSingleton(userManagerMock.Object);
+            Assert.Equal("mock-user-id-1234", userManagerMock.Object.GetUserId(new()));
         });
 
         builder.UseEnvironment("Development");
