@@ -63,5 +63,31 @@ namespace FrontendTests
             stopwatch.Stop();
             Assert.InRange(stopwatch.ElapsedMilliseconds, delayBeforeFlash, delayBeforeFlash + 50); // Allow for timing margin
         }
+
+        [Fact]
+        public async Task FlashButton_DisablesButtonAndRestoresStateAfterFlash()
+        {
+            _mockGameManager.Object.IsShowingSequence = false;
+
+            await _button.FlashButton(null, disableButton: true);
+
+            Assert.False(_button.IsLit);
+            Assert.False(_mockGameManager.Object.IsShowingSequence);
+        }
+
+        [Fact]
+        public async Task FlashButton_HandlesNullColorChangedActionGracefully()
+        {
+            await _button.FlashButton(null);
+
+            Assert.False(_button.IsLit);
+        }
+
+        [Fact]
+        public async Task Button_Ctor_ThrowsException_WhenNullArgumentsPassed()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Button(null!, 1, _mockGameManager.Object));
+            Assert.Throws<ArgumentNullException>(() => new Button("Test", 1, null!));
+        }
     }
 }

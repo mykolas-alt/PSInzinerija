@@ -56,5 +56,68 @@ namespace FrontendTests
             Assert.False(manager.SetHighScore(5)); // Should fail since 5 < 15
             Assert.Equal(15, manager.HighScore);
         }
+        [Fact]
+        public async Task StartNewGame_ResetsScoreAndPattern()
+        {
+            var manager = new VisualMemoryManager();
+
+            manager.SetHighScore(10);
+            await manager.StartNewGame();
+
+            Assert.Equal(0, manager.Score);
+            Assert.Equal(0, manager.GameMistakes);
+            Assert.NotNull(manager.Pattern);
+            Assert.Equal(0, manager.RecentScore);
+        }
+
+        [Fact]
+        public async Task HandleInput_EndsGameAfterThreeMistakes()
+        {
+            var manager = new VisualMemoryManager();
+            var invalidCell = new PatternCell(PatternValue.Invalid, 0);
+
+            Assert.Equal(0, manager.GameMistakes);
+            
+            await manager.HandleInput(invalidCell);
+
+            Assert.Equal(1, manager.GameMistakes);
+            Assert.Equal(0, manager.Score);
+        }
+
+        [Fact]
+        public void LoadStatisticsFromJSON_DoesNotUpdateHighScoreWithLowerValue()
+        {
+            var manager = new VisualMemoryManager();
+            manager.SetHighScore(20);
+
+            var json = JsonSerializer.Serialize(new VisualMemoryManager.VisualMemoryHighScore(10));
+            manager.LoadStatisticsFromJSON(json);
+
+            Assert.Equal(20, manager.HighScore); // HighScore should remain unchanged
+        }
+
+        [Fact]
+        public void SetHighScore_ReturnsFalseForNullOrLowerValue()
+        {
+            var manager = new VisualMemoryManager();
+            manager.SetHighScore(20);
+
+            Assert.False(manager.SetHighScore(null));
+            Assert.False(manager.SetHighScore(15));
+            Assert.Equal(20, manager.HighScore);
+        }
+
+        [Fact]
+        public void SerializedStatistics_ReturnsUpdatedHighScore()
+        {
+            var manager = new VisualMemoryManager();
+            manager.SetHighScore(30);
+
+            var json = manager.SerializedStatistics;
+            var deserialized = JsonSerializer.Deserialize<VisualMemoryManager.VisualMemoryHighScore>(json);
+
+            Assert.NotNull(deserialized);
+            Assert.Equal(30, deserialized?.HighScore);
+        }
     }
 }

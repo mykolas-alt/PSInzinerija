@@ -4,8 +4,6 @@ using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
-using Xunit;
-using PSInzinerija1.Shared.Data.Models;
 using Frontend.Services;
 using Shared.Data.Models;
 

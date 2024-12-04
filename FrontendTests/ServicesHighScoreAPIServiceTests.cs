@@ -17,16 +17,13 @@ namespace FrontendTests
             _mockHttpClientFactory = new Mock<IHttpClientFactory>();
             _mockLogger = new Mock<ILogger<HighScoreAPIService>>();
 
-            // Create a mock HttpClientHandler to mock HttpClient calls
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
 
-            // Create HttpClient using the mocked HttpMessageHandler
             var mockHttpClient = new HttpClient(mockHttpMessageHandler.Object)
             {
                 BaseAddress = new Uri("http://localhost")
             };
 
-            // Mock IHttpClientFactory to return the mock HttpClient
             _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(mockHttpClient);
 
             _service = new HighScoreAPIService(_mockHttpClientFactory.Object, _mockLogger.Object);
@@ -37,7 +34,6 @@ namespace FrontendTests
         {
             var game = AvailableGames.SimonSays;
 
-            // Mock error response
             _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(CreateMockHttpClientWithError());
 
             var result = await _service.GetLeaderboardEntriesAsync(game);
@@ -51,7 +47,6 @@ namespace FrontendTests
         {
             var game = AvailableGames.SimonSays;
 
-            // Mock error response
             _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(CreateMockHttpClientWithError());
 
             var result = await _service.GetHighScoreAsync(game);
@@ -64,7 +59,6 @@ namespace FrontendTests
         {
             var game = AvailableGames.SimonSays;
 
-            // Mock error response
             _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(CreateMockHttpClientWithError());
 
             var result = await _service.DeleteFromDbAsync(game);
@@ -78,7 +72,6 @@ namespace FrontendTests
             var game = AvailableGames.SimonSays;
             var newHighScore = 250;
 
-            // Mock error response
             _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(CreateMockHttpClientWithError());
 
             var result = await _service.SaveHighScoreToDbAsync(game, newHighScore);
