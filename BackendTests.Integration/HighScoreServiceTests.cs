@@ -90,7 +90,7 @@ namespace BackendTests.Integration
             // Assert
             Assert.NotNull(result);
             Assert.Single(result);
-            Assert.Equal("User1", result.First().Id);
+            Assert.Equal("Player1", result.First().UserName);
             Assert.Equal(100, result.First().HighScore);
         }
         [Fact]

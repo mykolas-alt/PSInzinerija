@@ -44,11 +44,17 @@ namespace Backend.Services
             return null;
         }
 
-        public async Task<List<HighScoresEntry>?> GetAllHighScoresAsync()
+        public async Task<List<LeaderboardEntry>?> GetAllHighScoresAsync()
         {
             try
             {
-                return await _context.HighScores.OrderByDescending(e => e.HighScore).ToListAsync();
+                var query = from a in _context.HighScores
+                            join b in _context.Users
+                                on a.Id equals b.Id
+                            orderby a.HighScore descending
+                            select new LeaderboardEntry(b.UserName ?? "Anon", a.HighScore, a.RecordDate);
+
+                return await query.ToListAsync();
             }
             catch (Exception e) when (e is OperationCanceledException || e is ArgumentNullException)
             {
@@ -83,6 +89,7 @@ namespace Backend.Services
             return null;
         }
 
+        // Gal turetu neleisti rasyti mazesnio highscore?
         public async Task<bool> PutUserHighScoreAsync(AvailableGames game, int newHighScore, string id)
         {
             var user_id = id;
@@ -124,15 +131,15 @@ namespace Backend.Services
         public async Task<bool> DeleteUserHighScoreAsync(AvailableGames game, string id)
         {
             var user_id = id;
-            var todoItem = await _context.HighScores.FindAsync(user_id, game);
-            if (todoItem == null)
+            var highScoresEntry = await _context.HighScores.FindAsync(user_id, game);
+            if (highScoresEntry == null)
             {
                 return false;
             }
 
             try
             {
-                _context.HighScores.Remove(todoItem);
+                _context.HighScores.Remove(highScoresEntry);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

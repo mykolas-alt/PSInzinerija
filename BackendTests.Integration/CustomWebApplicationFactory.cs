@@ -67,24 +67,6 @@ public class CustomWebApplicationFactory<TProgram>
                 options.UseSqlite(connection);
             });
 
-            // var serviceProvider = services.BuildServiceProvider();
-            // using var scope = serviceProvider.CreateScope();
-            // var sp = scope.ServiceProvider;
-            // using var dbcontext = sp.GetRequiredService<ApplicationDbContext>();
-            // dbcontext?.Database.EnsureCreated();
-            // var userManager = sp.GetRequiredService<UserManager<User>>();
-            // var userStore = sp.GetRequiredService<IUserStore<User>>();
-            // var emailStore = (IUserEmailStore<User>)userStore;
-            // var email = TestEmail;
-            // var userName = TestUserName;
-            // var password = TestPassword;
-
-            // var user = new User();
-            // await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
-            // await emailStore.SetEmailAsync(user, email, CancellationToken.None);
-            // var result = await userManager.CreateAsync(user, password);
-
-
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(UserManager<User>));
             if (descriptor != null)
             {
@@ -95,7 +77,6 @@ public class CustomWebApplicationFactory<TProgram>
             var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
             userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("mock-user-id-1234");
             services.AddSingleton(userManagerMock.Object);
-            Assert.Equal("mock-user-id-1234", userManagerMock.Object.GetUserId(new()));
         });
 
         builder.UseEnvironment("Development");

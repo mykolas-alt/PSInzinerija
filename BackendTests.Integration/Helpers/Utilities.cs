@@ -46,5 +46,21 @@ namespace BackendTests.Integration.Helpers
 
             return client;
         }
+
+        public static void ResetUsersScoresTable(this CustomWebApplicationFactory<Program> webApplicationFactory)
+        {
+            using var scope = webApplicationFactory.Services.CreateScope();
+            var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbcontext.Users.RemoveRange(dbcontext.Users);
+            dbcontext.SaveChanges();
+        }
+
+        public static void ResetHighScoresTable(this CustomWebApplicationFactory<Program> webApplicationFactory)
+        {
+            using var scope = webApplicationFactory.Services.CreateScope();
+            var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbcontext.HighScores.RemoveRange(dbcontext.HighScores);
+            dbcontext.SaveChanges();
+        }
     }
 }

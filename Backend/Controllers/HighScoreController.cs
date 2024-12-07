@@ -41,7 +41,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <returns>A list of high score entries</returns>
         [HttpGet]
-        public async Task<ActionResult<List<HighScoresEntry>>> GetAllHighScoresAsync()
+        public async Task<ActionResult<List<LeaderboardEntry>>> GetAllHighScoresAsync()
         {
             var list = await _highScoreService.GetAllHighScoresAsync();
 
@@ -100,6 +100,7 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
+
             var success = await _highScoreService.DeleteUserHighScoreAsync(game, id);
 
             // TODO: pateikti detalesne informacija
