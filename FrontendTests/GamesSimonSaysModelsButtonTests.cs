@@ -61,7 +61,7 @@ namespace FrontendTests
             await _button.FlashButton(null, delayBeforeFlash: delayBeforeFlash, duration: duration);
 
             stopwatch.Stop();
-            Assert.InRange(stopwatch.ElapsedMilliseconds, delayBeforeFlash, delayBeforeFlash + 50); // Allow for timing margin
+            Assert.InRange(stopwatch.ElapsedMilliseconds, delayBeforeFlash - 20, delayBeforeFlash + 20); // Allow for timing margin
         }
 
         [Fact]
