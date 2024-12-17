@@ -14,13 +14,13 @@ Web application, kuriame galima žaisti įvairius kognityvinius gebėjimus lavin
 - [x] Leaderboard ir aukščiausių rezultatų duomenų bazė
 - [x] Svečio prieiga
 - [x] Žaidimo logikos dalis vykdoma serveryje, front-end tik UI
-- [ ] Žaidimo pasirinkimas pagrindiniame puslapyje
+- [X] Žaidimo pasirinkimas pagrindiniame puslapyje
 
 ## Žaidimai
 - [ ] Chimp Test (atmintis atkartojant langelių seką)
 - [x] Verbal Memory (matytų žodžių prisiminimas)
 - [ ] Aim Trainer (greitumas ir tikslumas paspaudžiant taikinius)
-- [ ] Number Memory (kuo ilgesnio skaičiaus prisiminimas)
+- [X] Number Memory (kuo ilgesnio skaičiaus prisiminimas)
 - [ ] Falling Word Typing Game (suspėti surašyti žodžius kurie krenta iki apačios)
 - [x] Simon Says Game (prisiminti kuo ilgesnę besikartojančią ir ilgėjančią langelių seką)
 - [x] Visual Memory (prisiminti, kurie langeliai buvo uždegti žalia spalva)
@@ -28,3 +28,7 @@ Web application, kuriame galima žaisti įvairius kognityvinius gebėjimus lavin
 - ASP.NET (back-end)
 - Blazor (front-end)
 - SQLite (db)
+
+## Projekto paleidimas lokaliai
+Į bash terminalą parašyti bash run-project.sh
+
