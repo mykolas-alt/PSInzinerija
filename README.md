@@ -20,7 +20,7 @@ Web application, kuriame galima žaisti įvairius kognityvinius gebėjimus lavin
 - [ ] Chimp Test (atmintis atkartojant langelių seką)
 - [x] Verbal Memory (matytų žodžių prisiminimas)
 - [ ] Aim Trainer (greitumas ir tikslumas paspaudžiant taikinius)
-- [ ] Number Memory (kuo ilgesnio skaičiaus prisiminimas)
+- [x] Number Memory (kuo ilgesnio skaičiaus prisiminimas)
 - [ ] Falling Word Typing Game (suspėti surašyti žodžius kurie krenta iki apačios)
 - [x] Simon Says Game (prisiminti kuo ilgesnę besikartojančią ir ilgėjančią langelių seką)
 - [x] Visual Memory (prisiminti, kurie langeliai buvo uždegti žalia spalva)
