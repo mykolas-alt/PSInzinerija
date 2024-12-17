@@ -28,3 +28,6 @@ Web application, kuriame galima žaisti įvairius kognityvinius gebėjimus lavin
 - ASP.NET (back-end)
 - Blazor (front-end)
 - SQLite (db)
+
+## Projekto paleidimas lokaliai
+bash terminale parašyti bash run-project.sh
